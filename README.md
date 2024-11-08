@@ -7,6 +7,7 @@ Pour lancer l'application/microservices, aller dans les dossiers et lancer : ./g
 api gateway: http://localhost:8080
 
 ms user: http://localhost:8081/users
+ms location: http://localhost:8082/locations
 
 
 Builder l'application: ./gradlew build
