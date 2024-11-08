@@ -1,0 +1,16 @@
+
+CREATE TABLE "users" (
+    iduser SERIAL PRIMARY KEY,        -- Identifiant utilisateur généré automatiquement
+    role VARCHAR(10) NOT NULL,       -- Type d'utilisateur (user, admin, host)
+    lastname VARCHAR(100) NOT NULL,  -- Nom de famille
+    username VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,      -- Prénom
+    email VARCHAR(100) UNIQUE NOT NULL, -- Email (unique)
+    phone VARCHAR(15),                -- Numéro de téléphone
+    password VARCHAR(255) NOT NULL    -- Mot de passe (stocké sous forme hachée de préférence)
+);
+
+-- Exemples d'insertion de données dans la table 'user'
+INSERT INTO "users" (role, lastname,username, name, email, phone, password) VALUES
+('USER', 'Dupont','Alice1', 'Alice', 'alice@example.com', '0123456789', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.')
+
