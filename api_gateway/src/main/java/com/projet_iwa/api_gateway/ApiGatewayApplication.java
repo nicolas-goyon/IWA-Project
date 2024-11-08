@@ -22,13 +22,17 @@ public class ApiGatewayApplication {
         SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
-    
+    private static final String LOCATION_SERVICE_URL = "http://localhost:8082/locations";
     @GetMapping("/users") 
     public ResponseEntity<String> getUsers() {
         String url = "http://localhost:8081/users"; 
         return restTemplate.getForEntity(url, String.class);
     }
-
+    @GetMapping("/locations/get_all")
+    public ResponseEntity<String> getAllLocations() {
+        String url = LOCATION_SERVICE_URL +"/get_all";
+        return restTemplate.getForEntity(url, String.class);
+    }
 }
 
 
