@@ -12,9 +12,9 @@ public class MsUserApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MsUserApplication.class, args);
 	}
-	@GetMapping("/users")
+	/*@GetMapping("/users")
     public String getUsers() {
         return "[{\"id\": 1, \"name\": \"John Doe\"}, {\"id\": 2, \"name\": \"Jane Doe\"}]"; // Exemples d'utilisateurs
-    }
+    }*/
 
 }
