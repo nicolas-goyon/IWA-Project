@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: api_gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: users-service
+          predicates:
+            - Path=/users/**
+          uri: http://localhost:8081
+
+        - id: auth-route
+          predicates:
+            - Path=/auth/login
+          uri: http://localhost:8081
+
+        - id: locations-service
+          predicates:
+            - Path=/locations/**
+          uri: http://localhost:8082
+
+        - id: category-service
+          predicates:
+            - Path=/category/**
+          uri: http://localhost:8082
