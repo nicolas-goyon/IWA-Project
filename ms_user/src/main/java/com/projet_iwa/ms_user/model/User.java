@@ -19,8 +19,6 @@ public class User {
     @Column(name = "role", nullable = false, length = 10) // Type d'utilisateur
     private String role;
 
-
-
     @Column(name = "username", nullable = false, length = 10) // Type d'utilisateur
     private String username;
 
@@ -39,7 +37,20 @@ public class User {
     @Column(name = "password", nullable = false, length = 255) // Mot de passe
     private String password;
 
+
+    @Column(name = "biographie", nullable = true, columnDefinition = "TEXT") // Mot de passe
+    private String biographie;
+
+
     // Getters et Setters
+
+    public String getBiographie() {
+        return biographie;
+    }
+
+    public void setBiographie(String biographie) {
+        this.biographie = biographie;
+    }
     public Long getIduser() {
         return iduser;
     }
