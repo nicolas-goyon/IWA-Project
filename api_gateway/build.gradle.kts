@@ -4,7 +4,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "com.projet-iwa"
+group = "com.iwa-projet"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -17,14 +17,19 @@ repositories {
 	mavenCentral()
 }
 
+extra["springCloudVersion"] = "2023.0.3"
+
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
-    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
+	implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
+	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
 }
 
+dependencyManagement {
+	imports {
+		// BOM (Bill of Materials) pour assurer la compatibilité entre les dépendances Spring Cloud
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+	}
+}
 
 tasks.withType<Test> {
 	useJUnitPlatform()
