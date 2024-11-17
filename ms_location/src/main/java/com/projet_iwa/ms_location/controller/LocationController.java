@@ -1,7 +1,10 @@
 package com.projet_iwa.ms_location.controller;
 
+import com.projet_iwa.ms_location.dto.LocationDTO;
+import com.projet_iwa.ms_location.dto.LocationDTOFull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.projet_iwa.ms_location.model.Category;
@@ -19,39 +22,42 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
     @PostMapping("/create")
-    public Location createUser(@RequestBody Location location) {
+    public Location createLocation(@RequestBody Location location) {
         return locationService.saveLocation(location);
     }
 
-    @GetMapping("/get_all")
-    public List<Location> getAllLocations() {
+    @GetMapping("/")
+    public List<LocationDTO> getAllLocations() {
         return locationService.getAllLocations();
     }
-
     @GetMapping("/{id}")
-    public Location getLocationById(@PathVariable Long id) {
+    public LocationDTOFull getLocationById(@PathVariable Long id) {
         return locationService.getLocationById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteLocation(@PathVariable Long id) {
-        locationService.deleteLocation(id);
+    @GetMapping("/simple/{id}")
+    public Location getSimpleLocationById(@PathVariable Long id) {
+        return locationService.getSimpleLocationById(id);
     }
 
-    // Endpoint pour récupérer toutes les locations d'un utilisateur spécifique
-    @GetMapping("/by_user/{idUser}")
-    public List<Location> getLocationsByUserId(@PathVariable Long idUser) {
-        return locationService.getLocationsByUserId(idUser);
+    @GetMapping("/user/{id}")
+    public List<LocationDTO> getLocationByUserId(@PathVariable Long id) {
+        return locationService.getLocationByUserId(id);
     }
-    // Endpoint pour mettre à jour une location
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
+        try {
+            locationService.deleteLocation(id);
+            return ResponseEntity.noContent().build();  // Réponse 204 No Content
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();  // Réponse 404 Not Found si la location n'existe pas
+        }
+    }
+
     @PutMapping("/{id}")
     public Location updateLocation(@PathVariable Long id, @RequestBody Location location) {
         return locationService.updateLocation(id, location);
     }
-
-
-
-
 
     // Gestion d'exception globale pour retourner un message d'erreur
     @ExceptionHandler(IllegalArgumentException.class)

@@ -20,8 +20,12 @@ repositories {
 extra["springCloudVersion"] = "2023.0.3"
 
 dependencies {
-	implementation("jakarta.servlet:jakarta.servlet-api:5.0.0")
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+	implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 }
 
 dependencyManagement {
