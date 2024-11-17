@@ -1,4 +1,4 @@
-package com.projet_iwa.ms_user.dto;
+package com.projet_iwa.ms_reservation.dto;
 
 public class UserDTO {
 

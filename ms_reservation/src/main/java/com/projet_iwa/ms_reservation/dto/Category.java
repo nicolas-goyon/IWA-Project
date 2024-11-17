@@ -1,16 +1,12 @@
-package com.projet_iwa.ms_location.model;
+package com.projet_iwa.ms_reservation.dto;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "category")
+
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "name", nullable = false, length = 100)
+    private Long id;
     private String name;
 
     // Getters and Setters
