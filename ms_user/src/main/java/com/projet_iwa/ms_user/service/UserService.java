@@ -1,5 +1,6 @@
 package com.projet_iwa.ms_user.service;
 
+import com.projet_iwa.ms_user.dto.HostDTO;
 import com.projet_iwa.ms_user.dto.UserDTO;
 import com.projet_iwa.ms_user.model.User;
 import com.projet_iwa.ms_user.repository.UserRepository;
@@ -33,6 +34,14 @@ public class UserService {
         }
         // Utilisation de la méthode de mappage
         return Util.mapToUserDTO(user);
+    }
+    public HostDTO getHostById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        // Utilisation de la méthode de mappage
+        return Util.mapToHostDTO(user);
     }
 
     public User saveUser(User user) {

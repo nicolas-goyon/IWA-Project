@@ -21,8 +21,8 @@ extra["springCloudVersion"] = "2023.0.3"
 
 dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
-	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")

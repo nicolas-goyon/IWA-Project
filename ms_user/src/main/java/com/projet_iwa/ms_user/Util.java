@@ -1,5 +1,6 @@
 package com.projet_iwa.ms_user;
 
+import com.projet_iwa.ms_user.dto.HostDTO;
 import com.projet_iwa.ms_user.dto.UserDTO;
 import com.projet_iwa.ms_user.model.User;
 
@@ -16,6 +17,16 @@ public class Util {
         userDTO.setBiographie((user.getBiographie()));
         userDTO.setRole((user.getRole()));
         return userDTO;
+    }
+    public static HostDTO mapToHostDTO(User user) {
+        HostDTO hostDTO = new HostDTO();
+        hostDTO.setUsername(user.getUsername());
+        hostDTO.setLastname(user.getLastname());
+        hostDTO.setName(user.getName());
+        hostDTO.setEmail(user.getEmail());
+        hostDTO.setPhone(user.getPhone());
+        hostDTO.setBiographie((user.getBiographie()));
+        return hostDTO;
     }
 
 }

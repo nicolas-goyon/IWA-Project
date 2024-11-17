@@ -34,7 +34,7 @@ public class AuthController {
 
         if (existingUser != null && passwordEncoder.matches(authRequest.getPassword(), existingUser.getPassword())) {
             // Générer un JWT
-            String token = jwtTokenService.generateToken(existingUser.getUsername());
+            String token = jwtTokenService.generateToken(existingUser.getIduser());
             UserDTO user = Util.mapToUserDTO(existingUser);
             return new AuthResponse(token, user);
         }

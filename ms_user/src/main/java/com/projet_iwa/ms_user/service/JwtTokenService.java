@@ -13,11 +13,11 @@ public class JwtTokenService {
     // Durée de validité du token (ici 1h)
     private final long expirationTime = 3600000;
 
-    public String generateToken(String username) {
+    public String generateToken(Long iduser) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(iduser.toString()) // Remplacer username par iduser
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Expiration dans 1 heure
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

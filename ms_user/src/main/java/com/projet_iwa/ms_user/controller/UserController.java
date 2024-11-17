@@ -1,5 +1,6 @@
 package com.projet_iwa.ms_user.controller;
 
+import com.projet_iwa.ms_user.dto.HostDTO;
 import com.projet_iwa.ms_user.dto.UserDTO;
 import com.projet_iwa.ms_user.model.User;
 import com.projet_iwa.ms_user.service.UserService;
@@ -22,6 +23,10 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/host/{id}")
+    public HostDTO getHostById(@PathVariable Long id) {
+        return userService.getHostById(id);
+    }
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
