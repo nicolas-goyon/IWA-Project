@@ -5,7 +5,8 @@ CREATE TABLE location (
      title VARCHAR(100) NOT NULL,
      description VARCHAR(500),
      address VARCHAR(255) NOT NULL,
-     active BOOLEAN NOT NULL
+     active BOOLEAN NOT NULL,
+     imageUrl VARCHAR(255)
 );
 
 CREATE TABLE category (

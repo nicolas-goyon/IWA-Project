@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
-    List<Location> findByIdUser(Long idUser);
+    List<Location> findByIdUser(Long iduser);
 }

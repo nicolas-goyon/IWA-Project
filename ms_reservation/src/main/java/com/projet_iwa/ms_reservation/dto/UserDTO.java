@@ -1,4 +1,4 @@
-package com.projet_iwa.ms_location.dto;
+package com.projet_iwa.ms_user.dto;
 
 public class UserDTO {
 
