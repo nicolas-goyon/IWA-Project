@@ -1,8 +1,8 @@
-package com.projet_iwa.ms_location.dto;
+package com.projet_iwa.ms_reservation.dto;
 
 
-import com.projet_iwa.ms_location.dto.UserDTO;
-import com.projet_iwa.ms_location.model.Category;
+import com.projet_iwa.ms_reservation.dto.UserDTO;
+import com.projet_iwa.ms_reservation.dto.Category;
 
 public class LocationDTO {
 

@@ -1,2 +1,5 @@
-package com.projet_iwa.ms_reservation.model;public enum ReservationStatus {
+package com.projet_iwa.ms_reservation.model;
+
+public enum ReservationStatus {
+    VALIDATED, REJECTED, PENDING
 }

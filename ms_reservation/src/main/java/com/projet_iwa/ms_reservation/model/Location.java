@@ -1,40 +1,16 @@
-package com.projet_iwa.ms_location.model;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+package com.projet_iwa.ms_reservation.model;
 
 
-@Entity
-@Table(name = "location")
 public class Location {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-
-    @Column(name = "id_user", nullable = false)
     private Long idUser;
-
-    @Column(name = "id_category", nullable = false)
     private Long idCategory;
-
-    @Column(name = "title", nullable = false, length = 100)
     private String title;
-
-    @Column(name = "description", length = 500)
     private String description;
-
-    @Column(name = "address", nullable = false, length = 255)
     private String address;
-
-    @Column(name = "active", nullable = false)
     private Boolean active;
-
-    @Column(name = "imageUrl", nullable = true)
     private String imageUrl;
 
     // Getters and Setters

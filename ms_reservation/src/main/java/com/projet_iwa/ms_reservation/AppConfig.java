@@ -1,7 +1,8 @@
-package com.projet_iwa.ms_location;
+package com.projet_iwa.ms_reservation;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
