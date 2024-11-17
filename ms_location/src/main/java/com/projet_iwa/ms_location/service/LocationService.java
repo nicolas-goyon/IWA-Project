@@ -37,23 +37,28 @@ public class LocationService {
     @Autowired
     private RestTemplate restTemplate;
 
+
     @Value("${api.gateway.url}")
     private String apiGatewayUrl;
 
 
-    public List<LocationDTO> getAllLocations() {
+    public List<LocationDTO> getAllLocations(String authorizationHeader) {
         List<Location> locations = locationRepository.findAll();
         return locations.stream().map(location -> {
 
+            // Extraire le JWT du header
+            String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
             String userUrl = apiGatewayUrl + "/users/" + location.getIdUser();
-            ResponseEntity<UserDTO> response = restTemplate.exchange(userUrl, HttpMethod.GET, null, UserDTO.class);
+
+            // Utiliser sendRequestWithJwt pour envoyer la requête avec le JWT
+            ResponseEntity<UserDTO> response = Util.sendRequestWithJwt(userUrl, HttpMethod.GET, jwtToken, UserDTO.class, null);
 
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
                 throw new IllegalArgumentException("L'utilisateur avec l'ID " + location.getIdUser() + " n'existe pas.");
             }
 
             UserDTO userDTO = response.getBody();
-            Category category = categoryService.getCategoryById(location.getIdCategory()); // Récupérer la catégorie
+            Category category = categoryService.getCategoryById(location.getIdCategory());
 
             return new LocationDTO(
                     location.getId(),
@@ -67,15 +72,55 @@ public class LocationService {
             );
         }).collect(Collectors.toList());
     }
-    public LocationDTOFull getLocationById(Long id) {
+
+    public List<LocationDTO> getLocationByUserId(String authorizationHeader, Long userId) {
+        List<Location> locations = locationRepository.findByIdUser(userId);
+
+        return locations.stream().map(location -> {
+            // Extraire le JWT
+            String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
+            String userUrl = apiGatewayUrl + "/users/" + location.getIdUser();
+
+            // Utiliser sendRequestWithJwt pour envoyer la requête avec le JWT
+            ResponseEntity<UserDTO> response = Util.sendRequestWithJwt(userUrl, HttpMethod.GET, jwtToken, UserDTO.class, null);
+
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                throw new IllegalArgumentException("L'utilisateur avec l'ID " + location.getIdUser() + " n'existe pas.");
+            }
+
+            UserDTO userDTO = response.getBody();
+            Category category = categoryService.getCategoryById(location.getIdCategory());
+
+            return new LocationDTO(
+                    location.getId(),
+                    location.getTitle(),
+                    location.getDescription(),
+                    location.getAddress(),
+                    location.isActive(),
+                    location.getImageUrl(),
+                    userDTO,
+                    category
+            );
+        }).collect(Collectors.toList());
+    }
+
+    public Location getSimpleLocationById(String authorizationHeader,Long id) {
+        return locationRepository.findById(id).orElse(null);
+    }
+
+    public LocationDTOFull getLocationById(String authorizationHeader, Long id) {
         Location location = locationRepository.findById(id).orElse(null);
 
         if (location == null) {
             throw new IllegalArgumentException("La location avec l'ID " + id + " n'existe pas.");
         }
 
+        // Extraire le JWT
+        String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
         String userUrl = apiGatewayUrl + "/users/" + location.getIdUser();
-        ResponseEntity<UserDTO> response = restTemplate.exchange(userUrl, HttpMethod.GET, null, UserDTO.class);
+
+        // Utiliser sendRequestWithJwt pour envoyer la requête avec le JWT
+        ResponseEntity<UserDTO> response = Util.sendRequestWithJwt(userUrl, HttpMethod.GET, jwtToken, UserDTO.class, null);
 
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             throw new IllegalArgumentException("L'utilisateur avec l'ID " + location.getIdUser() + " n'existe pas.");
@@ -84,18 +129,16 @@ public class LocationService {
         UserDTO userDTO = response.getBody();
         Category category = categoryService.getCategoryById(location.getIdCategory());
 
-        // récupérer toutes les réservations pour cet idlocation
+        // Récupérer les réservations pour cette location
         String reservationUrl = apiGatewayUrl + "/reservations/all/location/" + id;
-        ResponseEntity<List<Reservation>> responseReservation = restTemplate.exchange(reservationUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Reservation>>() {});
+        ResponseEntity<List<Reservation>> responseReservation = Util.sendRequestWithJwt1(reservationUrl, HttpMethod.GET, jwtToken, new ParameterizedTypeReference<List<Reservation>>() {}, null);
 
         if (!responseReservation.getStatusCode().is2xxSuccessful() || responseReservation.getBody() == null) {
-            throw new IllegalArgumentException("Aucune réservation trouvé pour la location avec l'ID " + id );
+            throw new IllegalArgumentException("Aucune réservation trouvé pour la location avec l'ID " + id);
         }
-        // pour chaque, récupérer les start_end, les transformer en liste
-        // Liste des dates bloquées de la base de données
-        List<Date> blockedDates = new ArrayList<>();
 
-        // Ajouter les dates des réservations existantes
+        // Ajouter les dates de réservation dans la liste des dates bloquées
+        List<Date> blockedDates = new ArrayList<>();
         for (Reservation reservation : responseReservation.getBody()) {
             blockedDates.addAll(Util.getDatesBetween(reservation.getDateStart(), reservation.getDateEnd()));
         }
@@ -112,41 +155,14 @@ public class LocationService {
                 blockedDates
         );
     }
-    public Location getSimpleLocationById(Long id) {
-        return locationRepository.findById(id).orElse(null);
-    }
 
-    public List<LocationDTO> getLocationByUserId(Long userId) {
-        List<Location> locations = locationRepository.findByIdUser(userId);
 
-        return locations.stream().map(location -> {
-            String userUrl = apiGatewayUrl + "/users/" + location.getIdUser();
-            ResponseEntity<UserDTO> response = restTemplate.exchange(userUrl, HttpMethod.GET, null, UserDTO.class);
+    public Location saveLocation(String authorizationHeader,Location location) {
 
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                throw new IllegalArgumentException("L'utilisateur avec l'ID " + location.getIdUser() + " n'existe pas.");
-            }
-
-            UserDTO userDTO = response.getBody();
-            Category category = categoryService.getCategoryById(location.getIdCategory()); // Récupérer la catégorie
-
-            return new LocationDTO(
-                    location.getId(),
-                    location.getTitle(),
-                    location.getDescription(),
-                    location.getAddress(),
-                    location.isActive(),
-                    location.getImageUrl(),
-                    userDTO,
-                    category
-            );
-        }).collect(Collectors.toList());
-    }
-
-    public Location saveLocation(Location location) {
-
+        // Vérification de l'existence du user
+        String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
         String userUrl = apiGatewayUrl + "/users/" + location.getIdUser();
-        ResponseEntity<UserDTO> response = restTemplate.exchange(userUrl, HttpMethod.GET, null, UserDTO.class);
+        ResponseEntity<UserDTO> response = Util.sendRequestWithJwt(userUrl, HttpMethod.GET, jwtToken, UserDTO.class, null);
 
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             throw new IllegalArgumentException("L'utilisateur avec l'ID " + location.getIdUser() + " n'existe pas.");
@@ -159,7 +175,8 @@ public class LocationService {
         }
         return locationRepository.save(location);
     }
-    public void deleteLocation(Long id) {
+
+    public void deleteLocation(String authorizationHeader,Long id) {
         Optional<Location> location = locationRepository.findById(id);
         if (location.isEmpty()) {
             throw new IllegalArgumentException("La location avec l'ID " + id + " n'existe pas.");
@@ -168,7 +185,7 @@ public class LocationService {
     }
 
     // Méthode pour mettre à jour une location
-    public Location updateLocation(Long id, Location location) {
+    public Location updateLocation(String authorizationHeader,Long id, Location location) {
         Optional<Location> existingLocation = locationRepository.findById(id);
         if (existingLocation.isEmpty()) {
             throw new IllegalArgumentException("L'emplacement avec l'ID " + id + " n'existe pas.");

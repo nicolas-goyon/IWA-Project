@@ -22,32 +22,32 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
     @PostMapping("/create")
-    public Location createLocation(@RequestBody Location location) {
-        return locationService.saveLocation(location);
+    public Location createLocation(@RequestHeader("Authorization") String authorizationHeader,@RequestBody Location location) {
+        return locationService.saveLocation(authorizationHeader,location);
     }
 
     @GetMapping("/")
-    public List<LocationDTO> getAllLocations() {
-        return locationService.getAllLocations();
+    public List<LocationDTO> getAllLocations(@RequestHeader("Authorization") String authorizationHeader) {
+        return locationService.getAllLocations(authorizationHeader);
     }
     @GetMapping("/{id}")
-    public LocationDTOFull getLocationById(@PathVariable Long id) {
-        return locationService.getLocationById(id);
+    public LocationDTOFull getLocationById(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        return locationService.getLocationById(authorizationHeader,id);
     }
 
     @GetMapping("/simple/{id}")
-    public Location getSimpleLocationById(@PathVariable Long id) {
-        return locationService.getSimpleLocationById(id);
+    public Location getSimpleLocationById(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        return locationService.getSimpleLocationById(authorizationHeader,id);
     }
 
     @GetMapping("/user/{id}")
-    public List<LocationDTO> getLocationByUserId(@PathVariable Long id) {
-        return locationService.getLocationByUserId(id);
+    public List<LocationDTO> getLocationByUserId(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        return locationService.getLocationByUserId(authorizationHeader,id);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLocation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
         try {
-            locationService.deleteLocation(id);
+            locationService.deleteLocation(authorizationHeader,id);
             return ResponseEntity.noContent().build();  // Réponse 204 No Content
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();  // Réponse 404 Not Found si la location n'existe pas
@@ -55,8 +55,8 @@ public class LocationController {
     }
 
     @PutMapping("/{id}")
-    public Location updateLocation(@PathVariable Long id, @RequestBody Location location) {
-        return locationService.updateLocation(id, location);
+    public Location updateLocation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id, @RequestBody Location location) {
+        return locationService.updateLocation(authorizationHeader,id, location);
     }
 
     // Gestion d'exception globale pour retourner un message d'erreur
