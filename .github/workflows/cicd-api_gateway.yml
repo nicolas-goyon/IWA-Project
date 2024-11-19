@@ -34,13 +34,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Change directory
+    - name: Run tests with Gradle
       run: cd ${{ env.PROJECT_PATH }}
-
-    - name: Change permissions for gradlew
       run: chmod +x gradlew
-    
-    - name: Run unit tests
       run: ./gradlew clean test
 
   build:
