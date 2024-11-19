@@ -40,6 +40,9 @@ public class ApiGatewayConfig {
                 .route("review-service", r -> r.path("/reviews/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri("http://localhost:8083"))
+                .route("notification-service", r -> r.path("/notifications/**")
+                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .uri("http://localhost:8084"))
 
                 .build();
     }
