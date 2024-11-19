@@ -40,7 +40,7 @@ jobs:
       run: chmod +x ${{ env.PROJECT_PATH }}/gradlew
     
     - name: Run unit tests
-      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean test
+      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean test --scan
 
   build:
     runs-on: ubuntu-22.04
