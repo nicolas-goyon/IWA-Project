@@ -11,6 +11,7 @@ on:
 env:
   JAVA_VERSION: '21'
   PROJECT_PATH: api_gateway
+  MICROSERVICE_NAME: api_gateway
 
 jobs:
   test:
@@ -63,19 +64,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Build with Gradle
-      run: cd ${{ env.PROJECT_PATH }} 
-
     - name: Change permissions for gradlew
-      run: chmod +x gradlew
+      run: chmod +x ${{ env.PROJECT_PATH }}/gradlew
 
     - name: Build JAR file
-      run: ./gradlew clean build
+      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean build
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: ms1-build
+        name: ${{ env.MICROSERVICE_NAME }}-build
         path: ${{ env.PROJECT_PATH }}/build/libs/*.jar
 
   deploy:
@@ -89,7 +87,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v3
       with:
-        name: ms1-build
+        name: ${{ env.MICROSERVICE_NAME }}-build
         path: ${{ env.PROJECT_PATH }}/build/libs
 
     - name: Deploy to test environment
