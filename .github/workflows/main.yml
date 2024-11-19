@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Main CI/CD Pipeline
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Print Hello World
       run: echo "Hello, World!"

@@ -34,8 +34,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Run tests
-      run: cd ${{ env.PROJECT_PATH }} && ./gradlew test
+    - name: Change directory
+      run: cd ${{ env.PROJECT_PATH }}
+
+    - name: Change permissions for gradlew
+      run: chmod +x gradlew
+    
+    - name: Run unit tests
+      run: ./gradlew clean test
 
   build:
     runs-on: ubuntu-22.04
@@ -60,7 +66,13 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Build with Gradle
-      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean build
+      run: cd ${{ env.PROJECT_PATH }} 
+
+    - name: Change permissions for gradlew
+      run: chmod +x gradlew
+
+    - name: Build JAR file
+      run: ./gradlew clean build
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
