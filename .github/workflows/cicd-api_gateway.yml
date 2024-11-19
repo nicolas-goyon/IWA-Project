@@ -1,4 +1,4 @@
-name: MS1 CI/CD Pipeline
+name: API_GATEWAY CI/CD Pipeline
 
 on:
   push:
@@ -34,10 +34,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Run tests with Gradle
-      run: cd ${{ env.PROJECT_PATH }}
-      run: chmod +x gradlew
-      run: ./gradlew clean test
+
+    - name: Change permissions for gradlew
+      run: chmod +x ${{ env.PROJECT_PATH }}/gradlew
+    
+    - name: Run unit tests
+      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean test
 
   build:
     runs-on: ubuntu-22.04
