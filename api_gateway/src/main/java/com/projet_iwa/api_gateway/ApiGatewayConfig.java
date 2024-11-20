@@ -14,32 +14,51 @@ public class ApiGatewayConfig {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    
+    @Value("${routes.users-service.uri}")
+    private String usersServiceUri;
+
+    @Value("${routes.auth-route.uri}")
+    private String authRouteUri;
+
+    @Value("${routes.locations-service.uri}")
+    private String locationsServiceUri;
+
+    @Value("${routes.category-service.uri}")
+    private String categoryServiceUri;
+
+    @Value("${routes.reservation-service.uri}")
+    private String reservationServiceUri;
+
+    @Value("${routes.review-service.uri}")
+    private String reviewServiceUri;
+
     // Bean pour configurer les routes avec Spring Cloud Gateway
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("users-service", r -> r.path("/users/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8081"))
+                        .uri(usersServiceUri))
 
                 .route("auth-route", r -> r.path("/auth/**")
-                        .uri("http://localhost:8081"))
+                        .uri(authRouteUri))
 
                 .route("locations-service", r -> r.path("/locations/**")
-                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8082"))
+                        // .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .uri(locationsServiceUri))
 
                 .route("category-service", r -> r.path("/category/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8082"))
+                        .uri(categoryServiceUri))
 
                 .route("reservation-service", r -> r.path("/reservations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8083"))
+                        .uri(reservationServiceUri))
 
                 .route("review-service", r -> r.path("/reviews/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8083"))
+                        .uri(reviewServiceUri))
 
                 .build();
     }
