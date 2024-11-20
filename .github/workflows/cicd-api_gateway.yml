@@ -26,13 +26,14 @@ jobs:
 
     - name: Build Docker image
       run: |
-          docker build -t my-app:latest .
+          cd ${{ env.PROJECT_PATH }}
+          docker build -t testing_image:latest -f Dockerfile.test .
 
     - name: Run tests
       run: |
-          docker run --name my-app-container my-app:latest
-          docker cp my-app-container:/app/reports ./reports
-          docker rm my-app-container
+          docker run --name testing_container --env-file .env testing_image:latest
+          docker cp testing_container:/app/reports ./reports
+          docker rm testing_container
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3
