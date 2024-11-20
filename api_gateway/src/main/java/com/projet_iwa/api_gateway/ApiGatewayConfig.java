@@ -20,10 +20,10 @@ public class ApiGatewayConfig {
         return builder.routes()
                 .route("users-service", r -> r.path("/users/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8081"))
+                        .uri("http://localhost:8087"))
 
                 .route("auth-route", r -> r.path("/auth/**")
-                        .uri("http://localhost:8081"))
+                        .uri("http://localhost:8087"))
 
                 .route("locations-service", r -> r.path("/locations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
@@ -43,6 +43,12 @@ public class ApiGatewayConfig {
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri("http://localhost:8084"))
+                .route("messages-service", r -> r.path("/messages/**")
+                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .uri("http://localhost:8085"))
+                .route("conversation-service", r -> r.path("/conversations/**")
+                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .uri("http://localhost:8085"))
 
                 .build();
     }
