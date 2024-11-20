@@ -3,7 +3,6 @@ name: Release Pipeline
 on:
     workflow_run:
         workflows: ["API_GATEWAY CI/CD Pipeline"]
-        branches: ["**"]
         types:
         - completed
 
