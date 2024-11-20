@@ -12,3 +12,16 @@ ms location: http://localhost:8082/locations
 
 Builder l'application: ./gradlew build
 Exécuter le JAR: java -jar build/libs/mon-application.jar
+
+
+# Quickstart 
+
+## Prerequis
+
+- Avoir docker
+- Pouvoir faire docker-compose
+
+## Instruction
+
+- Faire `docker network create iwa_network`
+- Démarer chaque application via `docker-compose up --build`

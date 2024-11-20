@@ -21,7 +21,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa") // Pour JPA
     runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.5")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
 	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
     implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
 
