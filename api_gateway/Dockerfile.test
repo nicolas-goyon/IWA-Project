@@ -1,5 +1,5 @@
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:21-jdk-jammy AS builder
+FROM eclipse-temurin:21-jdk-jammy
 
 # Set the working directory in the container
 WORKDIR /app
@@ -16,13 +16,11 @@ COPY ${PROJECT_PATH}/src ./src
 # Copy the gradle directory
 COPY ${PROJECT_PATH}/gradle ./gradle
 
-# Build the application without running tests
-RUN ./gradlew clean test
+# Copy the run_tests.sh script
+COPY ${PROJECT_PATH}/run_tests.sh ./run_tests.sh
 
+# Set the permissions for the gradlew file and the shell script
+RUN chmod -R 777 /app
 
-
-# Stage 2: Create the runtime image
-FROM openjdk:24-ea-21-slim
-WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar /app/myapp.jar
-ENTRYPOINT ["java", "-jar", "/app/myapp.jar"]
+# Set the entry point to the run_tests.sh script
+ENTRYPOINT ["./run_tests.sh"]
