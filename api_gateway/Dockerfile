@@ -16,6 +16,9 @@ COPY ${PROJECT_PATH}/src ./src
 # Copy the gradle directory
 COPY ${PROJECT_PATH}/gradle ./gradle
 
+# Set the permissions for the directory
+RUN chmod -R 777 /app
+
 # Build the application without running tests
 RUN ./gradlew clean build -x test
 
