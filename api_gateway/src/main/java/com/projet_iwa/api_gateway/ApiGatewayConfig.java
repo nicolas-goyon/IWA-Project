@@ -33,6 +33,9 @@ public class ApiGatewayConfig {
     @Value("${routes.review-service.uri}")
     private String reviewServiceUri;
 
+    @Value("${routes.notification-service.uri}")
+    private String notificationServiceUri;
+
     // Bean pour configurer les routes avec Spring Cloud Gateway
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -61,7 +64,7 @@ public class ApiGatewayConfig {
                         .uri(reviewServiceUri))
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8084"))
+                        .uri(notificationServiceUri))
                 .build();
     }
 }
