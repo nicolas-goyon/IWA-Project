@@ -24,26 +24,40 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
   
-      - name: Build Docker image
+      - name: Create a network
+        run: docker network create iwa_network || true
+
+      - name: run docker-compose of db and tests
         run: |
-            cd ${{ env.PROJECT_PATH }}
-            docker build -t testing_image:latest -f Dockerfile.test .
-  
-      - name: Run tests
-        run: |
-            cd ${{ env.PROJECT_PATH }}
-            docker run --name testing_container --env-file .env testing_image:latest
-            docker cp testing_container:/app/reports ./reports
-            docker rm testing_container
-  
-      - name: Upload test reports
-        uses: actions/upload-artifact@v3
-        with:
-            name: test-reports
-            path: ./reports
-  
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml up -d db
+          docker-compose -f docker-compose.yml up tests
+
       - name: Clean up
-        run: docker rmi testing_image:latest
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml down
+
+    #   - name: Build Docker image
+    #     run: |
+    #         cd ${{ env.PROJECT_PATH }}
+    #         docker build -t testing_image:latest -f Dockerfile.test .
+  
+    #   - name: Run tests
+    #     run: |
+    #         cd ${{ env.PROJECT_PATH }}
+    #         docker run --name testing_container --env-file .env testing_image:latest
+    #         docker cp testing_container:/app/reports ./reports
+    #         docker rm testing_container
+  
+    #   - name: Upload test reports
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #         name: test-reports
+    #         path: ./reports
+  
+    #   - name: Clean up
+    #     run: docker rmi testing_image:latest
   
     build:
       runs-on: ubuntu-22.04
