@@ -59,43 +59,13 @@ jobs:
         distribution: 'temurin'
         java-version: ${{ env.JAVA_VERSION }}
 
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Change permissions for gradlew
-      run: chmod +x ${{ env.PROJECT_PATH }}/gradlew
-
-    - name: Build JAR file
-      run: cd ${{ env.PROJECT_PATH }} && ./gradlew clean build
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.MICROSERVICE_NAME }}-build
-        path: ${{ env.PROJECT_PATH }}/build/libs/*.jar
-
-  deploy:
-    runs-on: ubuntu-22.04
-    needs: build
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ env.MICROSERVICE_NAME }}-build
-        path: ${{ env.PROJECT_PATH }}/build/libs
-
-    - name: Deploy to test environment
+    - name: Build Docker image
       run: |
-        # Add your deployment commands here
-        # For example, if you are deploying to a Kubernetes cluster:
-        # kubectl apply -f deployment.yaml
-        echo "Deploying MS1 to test environment..."
+        cd ${{ env.PROJECT_PATH }}
+        docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
+
+    - name: Push Docker image to GitHub Container Registry
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
