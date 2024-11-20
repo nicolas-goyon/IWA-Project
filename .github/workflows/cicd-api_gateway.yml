@@ -31,6 +31,7 @@ jobs:
 
     - name: Run tests
       run: |
+          cd ${{ env.PROJECT_PATH }}
           docker run --name testing_container --env-file .env testing_image:latest
           docker cp testing_container:/app/reports ./reports
           docker rm testing_container
