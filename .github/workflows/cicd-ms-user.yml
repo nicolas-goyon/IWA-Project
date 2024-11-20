@@ -1,0 +1,72 @@
+name: MS_USER CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  JAVA_VERSION: '21'
+  PROJECT_PATH: ms_user
+  MICROSERVICE_NAME: ms_user
+
+jobs:
+    build-and-test:
+      runs-on: ubuntu-latest
+  
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+  
+      - name: Build Docker image
+        run: |
+            cd ${{ env.PROJECT_PATH }}
+            docker build -t testing_image:latest -f Dockerfile.test .
+  
+      - name: Run tests
+        run: |
+            cd ${{ env.PROJECT_PATH }}
+            docker run --name testing_container --env-file .env testing_image:latest
+            docker cp testing_container:/app/reports ./reports
+            docker rm testing_container
+  
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        with:
+            name: test-reports
+            path: ./reports
+  
+      - name: Clean up
+        run: docker rmi testing_image:latest
+  
+    build:
+      runs-on: ubuntu-22.04
+      needs: build-and-test
+  
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+  
+      - name: Build Docker image
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
+  
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+  
