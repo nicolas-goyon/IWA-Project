@@ -43,7 +43,7 @@ jobs:
           path: ./reports
 
     - name: Clean up
-      run: docker rmi my-app:latest
+      run: docker rmi testing_image:latest
 
   build:
     runs-on: ubuntu-22.04
