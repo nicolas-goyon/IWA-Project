@@ -1,0 +1,24 @@
+
+services:
+  api:
+    extends:
+      file: api_gateway/docker-compose.yml
+      service: api_gateway
+
+  user:
+    extends:
+      file: ms_user/docker-compose.yml
+      service: app
+
+  user-db:
+    extends:
+      file: ms_user/docker-compose.yml
+      service: db
+
+  # service3:
+  #   extends:
+  #     file: service3/docker-compose.yml
+  #     service: service3
+
+networks:
+  - iwa_network

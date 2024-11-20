@@ -1,0 +1,23 @@
+name: Test Pipeline
+on:
+  workflow_run:
+    workflows: 
+      - "API_GATEWAY CI/CD Pipeline"
+    types:
+      - completed
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - run: echo 'The triggering workflow passed'
+  on-failure: 
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+    - run: echo 'The triggering workflow failed'
+  on-other:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' && github.event.workflow_run.conclusion != 'failure' }}
+    steps:
+    - run: echo 'The triggering workflow did not pass nor fail'
