@@ -1,5 +1,5 @@
 # Use an official OpenJDK runtime as a parent image
-FROM eclipse-temurin:21-jdk-jammy
+FROM docker.io/nicolasgoyon/run_spring_tests
 
 # Set the working directory in the container
 WORKDIR /app
@@ -17,11 +17,5 @@ COPY ${PROJECT_PATH}/src ./src
 # Copy the gradle directory
 COPY ${PROJECT_PATH}/gradle ./gradle
 
-# Copy the run_tests.sh script
-COPY ${RUN_TESTS_PATH}/run_tests.sh ./run_tests.sh
-
 # Set the permissions for the gradlew file and the shell script
 RUN chmod -R 777 /app
-
-# Set the entry point to the run_tests.sh script
-ENTRYPOINT ["./run_tests.sh"]
