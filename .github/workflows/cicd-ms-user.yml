@@ -49,118 +49,36 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml down
 
+    build-and-push:
+      runs-on: ubuntu-22.04
+      needs: build-and-test
   
-    build-app:
-        runs-on: ubuntu-22.04
-    
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-    
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-    
-        - name: Install docker-compose
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y docker-compose
-    
-        - name: Build Docker images using Docker Compose
-          run: |
-            cd ${{ env.PROJECT_PATH }}
-            docker-compose -f docker-compose.yml build app
-
-        - name: Tag Docker images
-          run: |
-            docker tag app ${{ env.MICROSERVICE_NAME }}-app:latest
-
-        - name: Save Docker images
-          run: |
-            docker save ${{ env.MICROSERVICE_NAME }}-app:latest -o ${{ env.MICROSERVICE_NAME }}-app.tar
-
-        - name: Upload Docker images as artifacts
-          uses: actions/upload-artifact@v4
-          with:
-            name: ${{ env.MICROSERVICE_NAME }}-app
-            path: ${{ env.MICROSERVICE_NAME }}-app.tar
-            if-no-files-found: error
-
-    
-    build-db:
-        runs-on: ubuntu-22.04
-
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-
-        - name: Install docker-compose
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y docker-compose
-
-        - name: Build Docker images using Docker Compose
-          run: |
-            cd ${{ env.PROJECT_PATH }}
-            docker-compose -f docker-compose.yml build db || true
-    
-        - name: Tag Docker images
-          run: |
-            docker tag db ${{ env.MICROSERVICE_NAME }}-db:latest
-    
-        - name: Save Docker images
-          run: |
-            docker save ${{ env.MICROSERVICE_NAME }}-db:latest -o ${{ env.MICROSERVICE_NAME }}-db.tar
-    
-        - name: Upload Docker images as artifacts
-          uses: actions/upload-artifact@v4
-          with:
-            name: ${{ env.MICROSERVICE_NAME }}-db
-            path: ${{ env.MICROSERVICE_NAME }}-db.tar
-            if-no-files-found: error
-
-    push-app-db:
-        runs-on: ubuntu-22.04
-        needs: [build-app, build-db, build-and-test]
-
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-
-        - name: Install docker-compose
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y docker-compose
-
-        
-        - name: Download App Docker images
-          uses: actions/download-artifact@v4
-          with:
-            name: ${{ env.MICROSERVICE_NAME }}-app
-
-        - name: Download DB Docker images
-          uses: actions/download-artifact@v4
-          with:
-            name: ${{ env.MICROSERVICE_NAME }}-db
-        
-        - name: Load Docker images
-          run: |
-            docker load -i ${{ env.MICROSERVICE_NAME }}-app.tar
-            docker load -i ${{ env.MICROSERVICE_NAME }}-db.tar
-
-        - name: Push Docker images to GitHub Container Registry
-          run: |
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            # Push the application image
-            docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-
-            # Push the database image
-            docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
-    
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
   
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+  
+      - name: Install docker-compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+  
+      - name: Build Docker images using Docker Compose
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml build app
+          docker-compose -f docker-compose.yml build db 
+  
+      - name: Tag Docker images
+        run: |
+          docker tag app ${{ env.MICROSERVICE_NAME }}-app:latest
+          docker tag db ${{ env.MICROSERVICE_NAME }}-db:latest
+  
+      - name: Push Docker images to GitHub Container Registry
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+  
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
