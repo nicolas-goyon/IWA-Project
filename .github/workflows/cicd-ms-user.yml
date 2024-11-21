@@ -32,9 +32,6 @@ jobs:
       - name: Create a network
         run: docker network create iwa_network || true
 
-      - name: Add project path to .env
-        run: echo "PROJECT_PATH=${{ env.PROJECT_PATH }}" >> ${{ env.PROJECT_PATH }}/.env
-
       - name: run docker-compose of db and tests
         run: |
           cd ${{ env.PROJECT_PATH }}

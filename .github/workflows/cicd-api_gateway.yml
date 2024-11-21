@@ -60,16 +60,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y docker-compose
 
-    - name: Create a network
-      run: docker network create iwa_network || true
-
-    - name: Add project path to .env
-      run: echo "PROJECT_PATH=${{ env.PROJECT_PATH }}" >> ${{ env.PROJECT_PATH }}/.env
-
     - name: run docker-compose of db and tests
       run: |
         cd ${{ env.PROJECT_PATH }}
-        docker-compose -f docker-compose.yml up -d db
         docker-compose -f docker-compose.yml up tests || true
 
     - name: Upload artifacts
