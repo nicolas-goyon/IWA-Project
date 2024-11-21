@@ -20,6 +20,7 @@ services:
       - default
 
   db:
+    image: db:latest
     build: 
       context: .
       dockerfile: ../cicd/Dockerfile.db
