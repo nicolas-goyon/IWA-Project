@@ -14,36 +14,74 @@ env:
   MICROSERVICE_NAME: api_gateway
 
 jobs:
+#   build-and-test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+
+#     - name: Set up Docker Buildx
+#       uses: docker/setup-buildx-action@v2
+
+#     - name: Build Docker image
+#       run: |
+#           cd ${{ env.PROJECT_PATH }}
+#           docker build -t testing_image:latest -f Dockerfile.test .
+
+#     - name: Run tests
+#       run: |
+#           cd ${{ env.PROJECT_PATH }}
+#           docker run --name testing_container --env-file .env testing_image:latest
+#           docker cp testing_container:/app/reports ./reports
+#           docker rm testing_container
+
+#     - name: Upload test reports
+#       uses: actions/upload-artifact@v3
+#       with:
+#           name: test-reports
+#           path: ./reports
+
+#     - name: Clean up
+#       run: docker rmi testing_image:latest
+
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image
+    - name: Install docker-compose
       run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker build -t testing_image:latest -f Dockerfile.test .
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
-    - name: Run tests
+    - name: Create a network
+      run: docker network create iwa_network || true
+
+    - name: Add project path to .env
+      run: echo "PROJECT_PATH=${{ env.PROJECT_PATH }}" >> ${{ env.PROJECT_PATH }}/.env
+
+    - name: run docker-compose of db and tests
       run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker run --name testing_container --env-file .env testing_image:latest
-          docker cp testing_container:/app/reports ./reports
-          docker rm testing_container
+        cd ${{ env.PROJECT_PATH }}
+        docker-compose -f docker-compose.yml up -d db
+        docker-compose -f docker-compose.yml up tests || true
 
-    - name: Upload test reports
+    - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-          name: test-reports
-          path: ./reports
+        name: ${{ env.MICROSERVICE_NAME }}-tests-reports
+        path: ${{ env.PROJECT_PATH }}/reports
 
     - name: Clean up
-      run: docker rmi testing_image:latest
+      run: |
+        cd ${{ env.PROJECT_PATH }}
+        docker-compose -f docker-compose.yml down
 
   build:
     runs-on: ubuntu-22.04
