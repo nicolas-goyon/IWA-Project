@@ -2,7 +2,11 @@ name: Test Pipeline
 on:
   workflow_run:
     workflows: 
-      - "API_GATEWAY CI/CD Pipeline"
+      - API_GATEWAY CI/CD Pipeline
+      - MS_USER CI/CD Pipeline
+      - MS_RESERVATION CI/CD Pipeline
+    branches:
+      - main
     types:
       - completed
 jobs:

@@ -39,6 +39,15 @@ public class ApiGatewayConfig {
     // Bean pour configurer les routes avec Spring Cloud Gateway
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        // debug routes
+        System.out.println("usersServiceUri: " + usersServiceUri);
+        System.out.println("authRouteUri: " + authRouteUri);
+        System.out.println("locationsServiceUri: " + locationsServiceUri);
+        System.out.println("categoryServiceUri: " + categoryServiceUri);
+        System.out.println("reservationServiceUri: " + reservationServiceUri);
+        System.out.println("reviewServiceUri: " + reviewServiceUri);
+        System.out.println("notificationServiceUri: " + notificationServiceUri);
+        
         return builder.routes()
                 .route("users-service", r -> r.path("/users/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))

@@ -19,53 +19,63 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image
+    - name: Install docker-compose
       run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker build -t testing_image:latest -f Dockerfile.test .
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
-    - name: Run tests
+    - name: Create a network
+      run: docker network create iwa_network 
+
+    - name: run docker-compose of db and tests
       run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker run --name testing_container --env-file .env testing_image:latest
-          docker cp testing_container:/app/reports ./reports
-          docker rm testing_container
+        cd ${{ env.PROJECT_PATH }}
+        docker-compose -f docker-compose.yml up --build tests
 
-    - name: Upload test reports
-      uses: actions/upload-artifact@v3
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
       with:
-          name: test-reports
-          path: ./reports
+        name: ${{ env.MICROSERVICE_NAME }}-tests-reports
+        path: ${{ env.PROJECT_PATH }}/reports
 
     - name: Clean up
-      run: docker rmi testing_image:latest
+      run: |
+        cd ${{ env.PROJECT_PATH }}
+        docker-compose -f docker-compose.yml down
 
-  build:
+  build-and-push:
     runs-on: ubuntu-22.04
     needs: build-and-test
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: ${{ env.JAVA_VERSION }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image
+    - name: Install docker-compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Build Docker images using Docker Compose
       run: |
         cd ${{ env.PROJECT_PATH }}
-        docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
+        docker-compose -f docker-compose.yml build app
 
-    - name: Push Docker image to GitHub Container Registry
+    - name: Tag Docker images
+      run: |
+        docker tag app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+
+    - name: Push Docker images to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
-        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+
+        # Push the application image
+        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
