@@ -104,6 +104,7 @@ jobs:
     - name: Load Docker images
       run: |
         docker load -i ${{ env.MICROSERVICE_NAME }}-app.tar
+        docker ps -a
 
     - name: Push Docker images to GitHub Container Registry
       run: |
