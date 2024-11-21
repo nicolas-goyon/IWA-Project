@@ -49,16 +49,9 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml down
 
-    #   - name: Upload test reports
-    #     uses: actions/upload-artifact@v3
-    #     with:
-    #         name: test-reports
-    #         path: ./reports
-  
   
     build-app:
         runs-on: ubuntu-22.04
-        needs: build-and-test
     
         steps:
         - name: Checkout code
@@ -95,7 +88,6 @@ jobs:
     
     build-db:
         runs-on: ubuntu-22.04
-        needs: build-and-test
 
         steps:
         - name: Checkout code
@@ -131,7 +123,7 @@ jobs:
 
     push-app-db:
         runs-on: ubuntu-22.04
-        needs: [build-app, build-db]
+        needs: [build-app, build-db, build-and-test]
 
         steps:
         - name: Checkout code
