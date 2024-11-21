@@ -72,11 +72,11 @@ jobs:
 
         - name: Tag Docker images
           run: |
-            docker tag app ${{ env.MICROSERVICE_NAME }}-app:build
+            docker tag app ${{ env.MICROSERVICE_NAME }}-app:latest
 
         - name: Save Docker images
           run: |
-            docker save ${{ env.MICROSERVICE_NAME }}-app:build -o ${{ env.MICROSERVICE_NAME }}-app.tar
+            docker save ${{ env.MICROSERVICE_NAME }}-app:latest -o ${{ env.MICROSERVICE_NAME }}-app.tar
 
         - name: Upload Docker images as artifacts
           uses: actions/upload-artifact@v4
@@ -108,11 +108,11 @@ jobs:
     
         - name: Tag Docker images
           run: |
-            docker tag db ${{ env.MICROSERVICE_NAME }}-db:build
+            docker tag db ${{ env.MICROSERVICE_NAME }}-db:latest
     
         - name: Save Docker images
           run: |
-            docker save ${{ env.MICROSERVICE_NAME }}-db:build -o ${{ env.MICROSERVICE_NAME }}-db.tar
+            docker save ${{ env.MICROSERVICE_NAME }}-db:latest -o ${{ env.MICROSERVICE_NAME }}-db.tar
     
         - name: Upload Docker images as artifacts
           uses: actions/upload-artifact@v4
