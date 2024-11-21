@@ -4,8 +4,7 @@ services:
     build:
       context: .
       dockerfile: ../cicd/Dockerfile
-    image: ${MS_NAME}-app:latest
-    container_name: ${MS_NAME}
+    image: app:latest
     ports:
       - ${MS_PORT}:${MS_PORT}
     environment:
@@ -27,8 +26,7 @@ services:
     build:
       context: .
       dockerfile: ../cicd/Dockerfile.test
-    image: ${MS_NAME}-tests:latest
-    container_name: ${MS_NAME}-tests
+    image: tests:latest
     environment:
       - JAVA_VERSION=21
       - PROJECT_PATH=${PROJECT_PATH}

@@ -1,7 +1,6 @@
 services:
   app:
-    container_name: ${MS_NAME}
-    image: ${MS_NAME}-app:latest
+    image: app:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile
@@ -21,7 +20,7 @@ services:
       - default
 
   db:
-    image: postgres:13
+    image: db:latest
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
@@ -34,8 +33,7 @@ services:
       - default
 
   tests:
-    container_name: ${MS_NAME}-tests
-    image: ${MS_NAME}-tests:latest
+    image: tests:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile.test
