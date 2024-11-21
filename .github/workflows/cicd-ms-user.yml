@@ -67,28 +67,74 @@ jobs:
     #   - name: Clean up
     #     run: docker rmi testing_image:latest
   
-    build:
-      runs-on: ubuntu-22.04
-      needs: build-and-test
-  
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-  
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
-  
-      - name: Build Docker image
-        run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
-  
-      - name: Push Docker image to GitHub Container Registry
-        run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
-          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+    build-app:
+        runs-on: ubuntu-22.04
+        needs: build-and-test
+    
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+    
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+    
+        - name: Install docker-compose
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y docker-compose
+    
+        - name: Build application Docker image
+          run: |
+            cd ${{ env.PROJECT_PATH }}
+            docker-compose -f docker-compose.yml build app
+    
+    build-db:
+        runs-on: ubuntu-22.04
+        needs: build-and-test
+
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+
+        - name: Install docker-compose
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y docker-compose
+
+        - name: Build database Docker image
+          run: |
+            cd ${{ env.PROJECT_PATH }}
+            docker-compose -f docker-compose.yml build db
+
+    push-app-db:
+        runs-on: ubuntu-22.04
+        needs: [build-app, build-db]
+
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+
+        - name: Install docker-compose
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y docker-compose
+
+        - name: Tag and push Docker images to GitHub Container Registry
+          run: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Tag and push the application image
+            docker tag ${{ env.MICROSERVICE_NAME }}-app:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+            docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+
+            # Tag and push the database image
+            docker tag postgres:13 ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+            docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+    
   
