@@ -119,7 +119,7 @@ jobs:
     
         - name: Tag Docker images
           run: |
-            docker tag postgres:13 ${{ env.MICROSERVICE_NAME }}-db:build
+            docker tag db ${{ env.MICROSERVICE_NAME }}-db:build
     
         - name: Save Docker images
           run: |
