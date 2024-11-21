@@ -36,7 +36,7 @@ jobs:
         run: |
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml up -d db
-          docker-compose -f docker-compose.yml up tests
+          docker-compose -f docker-compose.yml up tests --build-arg PROJECT_PATH=${{ env.PROJECT_PATH }}
 
       - name: Clean up
         run: |
