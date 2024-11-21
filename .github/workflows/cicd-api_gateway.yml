@@ -76,27 +76,92 @@ jobs:
         cd ${{ env.PROJECT_PATH }}
         docker-compose -f docker-compose.yml down
 
-  build:
+  # build:
+  #   runs-on: ubuntu-22.04
+  #   needs: build-and-test
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v3
+
+  #   - name: Set up JDK ${{ env.JAVA_VERSION }}
+  #     uses: actions/setup-java@v3
+  #     with:
+  #       distribution: 'temurin'
+  #       java-version: ${{ env.JAVA_VERSION }}
+
+  #   - name: Build Docker image
+  #     run: |
+  #       cd ${{ env.PROJECT_PATH }}
+  #       docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
+
+  #   - name: Push Docker image to GitHub Container Registry
+  #     run: |
+  #       echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+  #       docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+  #       docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+
+  build-app:
     runs-on: ubuntu-22.04
-    needs: build-and-test
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up JDK ${{ env.JAVA_VERSION }}
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: ${{ env.JAVA_VERSION }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker image
+    - name: Install docker-compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: build app
       run: |
         cd ${{ env.PROJECT_PATH }}
-        docker build -t ${{ env.MICROSERVICE_NAME}}:latest .
+        docker-compose -f docker-compose.yml build app
 
-    - name: Push Docker image to GitHub Container Registry
+    - name: Tag Docker images
+      run: |
+        docker tag app ${{ env.MICROSERVICE_NAME }}-app:build
+
+    - name: Save Docker images
+      run: |
+        docker save ${{ env.MICROSERVICE_NAME }}-app:build -o ${{ env.MICROSERVICE_NAME }}-app-image.tar
+
+    - name: Upload Docker images as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.MICROSERVICE_NAME }}-app-image
+
+  push-app:
+    runs-on: ubuntu-22.04
+    needs: [build-app]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Install docker-compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Download App Docker images
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.MICROSERVICE_NAME }}-app-image
+
+    - name: Load Docker images
+      run: |
+        docker load -i ${{ env.MICROSERVICE_NAME }}-app-image.tar
+
+    - name: Push Docker images to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker tag ${{ env.MICROSERVICE_NAME }}:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
-        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}:latest
+
+        # Push the application image
+        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
