@@ -71,13 +71,13 @@ jobs:
 
     - name: Save Docker images
       run: |
-        docker save ${{ env.MICROSERVICE_NAME }}-app:build -o ${{ env.MICROSERVICE_NAME }}-app-image.tar
+        docker save ${{ env.MICROSERVICE_NAME }}-app:build -o ${{ env.MICROSERVICE_NAME }}-app.tar
 
     - name: Upload Docker images as artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.MICROSERVICE_NAME }}-app-image
-        path: ${{ env.MICROSERVICE_NAME }}-app-image.tar
+        name: ${{ env.MICROSERVICE_NAME }}-app
+        path: ${{ env.MICROSERVICE_NAME }}-app.tar
         if-no-files-found: error
 
   push-app:
@@ -99,11 +99,11 @@ jobs:
     - name: Download App Docker images
       uses: actions/download-artifact@v4
       with:
-        name: ${{ env.MICROSERVICE_NAME }}-app-image
+        name: ${{ env.MICROSERVICE_NAME }}-app
 
     - name: Load Docker images
       run: |
-        docker load -i ${{ env.MICROSERVICE_NAME }}-app-image.tar
+        docker load -i ${{ env.MICROSERVICE_NAME }}-app.tar
 
     - name: Push Docker images to GitHub Container Registry
       run: |
