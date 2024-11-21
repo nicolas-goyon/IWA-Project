@@ -70,14 +70,6 @@ jobs:
       run: |
         docker tag app ${{ env.MICROSERVICE_NAME }}-app:latest
 
-    - name: Save Docker images
-      run: |
-        docker save ${{ env.MICROSERVICE_NAME }}-app:latest -o ${{ env.MICROSERVICE_NAME }}-app.tar
-
-    - name: Load Docker images
-      run: |
-        docker load -i ${{ env.MICROSERVICE_NAME }}-app.tar
-
     - name: Push Docker images to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
