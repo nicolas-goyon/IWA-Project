@@ -32,7 +32,7 @@ jobs:
     - name: run docker-compose of db and tests
       run: |
         cd ${{ env.PROJECT_PATH }}
-        docker-compose -f docker-compose.yml up tests --build || true
+        docker-compose -f docker-compose.yml up --build tests || true
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
