@@ -1,10 +1,9 @@
 services:
   app:
-    container_name: ${MS_NAME}
-    image: ${MS_NAME}-app:latest
+    image: app:latest
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ../cicd/Dockerfile
     ports:
       - ${MS_PORT}:${MS_PORT}
     environment:
@@ -21,16 +20,39 @@ services:
       - default
 
   db:
-    image: postgres:13
+    image: db:latest
+    build: 
+      context: .
+      dockerfile: ../cicd/Dockerfile.db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # - pgdata:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
     ports:
       - ${DB_PORT}:${DB_PORT}
     networks:
+      - default
+
+  tests:
+    image: tests:latest
+    build:
+      context: .
+      dockerfile: ../cicd/Dockerfile.test
+    environment:
+      - DB_URL=jdbc:${DB_TYPE}://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - API_GATEWAY_URL=${API_GATEWAY_PROTOCOL}://${API_GATEWAY_HOST}:${API_GATEWAY_PORT}
+      - MS_NAME=${MS_NAME}
+      - MS_PORT=${MS_PORT}
+    depends_on:
+      - db
+    networks:
+      - iwa_network
       - default
 
 
