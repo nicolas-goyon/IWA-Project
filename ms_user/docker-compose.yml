@@ -38,7 +38,7 @@ services:
     image: ${MS_NAME}-tests:latest
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: ../cicd/Dockerfile.test
     environment:
       - DB_URL=jdbc:${DB_TYPE}://${DB_HOST}:${DB_PORT}/${DB_NAME}
       - DB_USERNAME=${DB_USERNAME}
