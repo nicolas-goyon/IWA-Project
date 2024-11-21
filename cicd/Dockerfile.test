@@ -6,7 +6,6 @@ WORKDIR /app
 
 # Define build path to ./
 ARG PROJECT_PATH=./
-ARG RUN_TESTS_PATH=../cicd
 
 # Copy the build.gradle and settings.gradle files
 COPY ${PROJECT_PATH}/build.gradle.kts ${PROJECT_PATH}/settings.gradle.kts ${PROJECT_PATH}/gradlew ${PROJECT_PATH}/gradlew.bat ./

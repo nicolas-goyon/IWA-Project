@@ -4,7 +4,7 @@ services:
     image: ${MS_NAME}-app:latest
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ../cicd/Dockerfile
     ports:
       - ${MS_PORT}:${MS_PORT}
     environment:

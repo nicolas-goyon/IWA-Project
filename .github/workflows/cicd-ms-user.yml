@@ -19,10 +19,10 @@ jobs:
   
       steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
   
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v4
 
       - name: Install docker-compose
         run: |
@@ -46,26 +46,12 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml down
 
-    #   - name: Build Docker image
-    #     run: |
-    #         cd ${{ env.PROJECT_PATH }}
-    #         docker build -t testing_image:latest -f Dockerfile.test .
-  
-    #   - name: Run tests
-    #     run: |
-    #         cd ${{ env.PROJECT_PATH }}
-    #         docker run --name testing_container --env-file .env testing_image:latest
-    #         docker cp testing_container:/app/reports ./reports
-    #         docker rm testing_container
-  
     #   - name: Upload test reports
     #     uses: actions/upload-artifact@v3
     #     with:
     #         name: test-reports
     #         path: ./reports
   
-    #   - name: Clean up
-    #     run: docker rmi testing_image:latest
   
     build-app:
         runs-on: ubuntu-22.04
@@ -73,20 +59,36 @@ jobs:
     
         steps:
         - name: Checkout code
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
     
         - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v2
+          uses: docker/setup-buildx-action@v4
     
         - name: Install docker-compose
           run: |
             sudo apt-get update
             sudo apt-get install -y docker-compose
     
-        - name: Build application Docker image
+        - name: Build Docker images using Docker Compose
           run: |
             cd ${{ env.PROJECT_PATH }}
             docker-compose -f docker-compose.yml build app
+
+        - name: Tag Docker images
+          run: |
+            docker tag testing_image:latest ${{ env.MICROSERVICE_NAME }}-app:build
+
+        - name: Save Docker images
+          run: |
+            docker save ${{ env.MICROSERVICE_NAME }}-app:build -o ${{ env.MICROSERVICE_NAME }}-app-image.tar
+
+        - name: Upload Docker images as artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: ${{ env.MICROSERVICE_NAME }}-app-image
+            path: ${{ env.MICROSERVICE_NAME }}-app-image.tar
+            if-no-files-found: error
+
     
     build-db:
         runs-on: ubuntu-22.04
@@ -94,20 +96,35 @@ jobs:
 
         steps:
         - name: Checkout code
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
 
         - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v2
+          uses: docker/setup-buildx-action@v4
 
         - name: Install docker-compose
           run: |
             sudo apt-get update
             sudo apt-get install -y docker-compose
 
-        - name: Build database Docker image
+        - name: Build Docker images using Docker Compose
           run: |
             cd ${{ env.PROJECT_PATH }}
             docker-compose -f docker-compose.yml build db
+    
+        - name: Tag Docker images
+          run: |
+            docker tag postgres:13 ${{ env.MICROSERVICE_NAME }}-db:build
+    
+        - name: Save Docker images
+          run: |
+            docker save ${{ env.MICROSERVICE_NAME }}-db:build -o ${{ env.MICROSERVICE_NAME }}-db-image.tar
+    
+        - name: Upload Docker images as artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: ${{ env.MICROSERVICE_NAME }}-db-image
+            path: ${{ env.MICROSERVICE_NAME }}-db-image.tar
+            if-no-files-found: error
 
     push-app-db:
         runs-on: ubuntu-22.04
@@ -125,16 +142,30 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y docker-compose
 
-        - name: Tag and push Docker images to GitHub Container Registry
+        
+        - name: Download App Docker images
+          uses: actions/download-artifact@v3
+          with:
+            name: ${{ env.MICROSERVICE_NAME }}-app-image
+
+        - name: Download DB Docker images
+          uses: actions/download-artifact@v3
+          with:
+            name: ${{ env.MICROSERVICE_NAME }}-db-image
+        
+        - name: Load Docker images
+          run: |
+            docker load -i ${{ env.MICROSERVICE_NAME }}-app-image.tar
+            docker load -i ${{ env.MICROSERVICE_NAME }}-db-image.tar
+
+        - name: Push Docker images to GitHub Container Registry
           run: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Tag and push the application image
-            docker tag ${{ env.MICROSERVICE_NAME }}-app:latest ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+            # Push the application image
             docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
 
-            # Tag and push the database image
-            docker tag postgres:13 ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+            # Push the database image
             docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
     
   
