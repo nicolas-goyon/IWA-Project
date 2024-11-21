@@ -32,7 +32,7 @@ jobs:
     - name: run docker-compose of db and tests
       run: |
         cd ${{ env.PROJECT_PATH }}
-        docker-compose -f docker-compose.yml up tests || true
+        docker-compose -f docker-compose.yml up tests --build || true
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
@@ -77,6 +77,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.MICROSERVICE_NAME }}-app-image
+        path: ${{ env.MICROSERVICE_NAME }}-app-image.tar
+        if-no-files-found: error
 
   push-app:
     runs-on: ubuntu-22.04
