@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ../cicd/Dockerfile
+      dockerfile: ./Dockerfile
     image: app:latest
     ports:
       - ${MS_PORT}:${MS_PORT}
