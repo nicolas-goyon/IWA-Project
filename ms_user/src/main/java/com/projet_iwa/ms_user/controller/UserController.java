@@ -33,9 +33,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody User user) {
-        user.setIduser(id);
-        userService.saveUser(user);
+    public ResponseEntity<Void> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        boolean updated = userService.updateUser(id, userDTO);
+        if (!updated) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
