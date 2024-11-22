@@ -29,7 +29,7 @@ public class ApiGatewayConfig {
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri("http://localhost:8082"))
 
-                .route("category-service", r -> r.path("/category/**")
+                .route("category-service", r -> r.path("/categories/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri("http://localhost:8082"))
 
