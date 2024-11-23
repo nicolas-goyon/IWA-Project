@@ -29,13 +29,13 @@ public class DebugConnexionFilter implements GatewayFilter {
 
 
     public DebugConnexionFilter(
-        String usersServiceUri,
-        String authRouteUri,
-        String locationsServiceUri,
-        String categoryServiceUri,
-        String reservationServiceUri,
-        String reviewServiceUri,
-        String notificationServiceUri
+        @Value("${routes.users-service.uri}") String usersServiceUri,
+        @Value("${routes.auth-route.uri}") String authRouteUri,
+        @Value("${routes.locations-service.uri}") String locationsServiceUri,
+        @Value("${routes.category-service.uri}") String categoryServiceUri,
+        @Value("${routes.reservation-service.uri}") String reservationServiceUri,
+        @Value("${routes.review-service.uri}") String reviewServiceUri,
+        @Value("${routes.notification-service.uri}") String notificationServiceUri
     ) {
         this.usersServiceUri = usersServiceUri;
         this.authRouteUri = authRouteUri;
