@@ -77,7 +77,15 @@ public class ApiGatewayConfig {
                         .uri(notificationServiceUri))
                 // The debug service is here to test the gateway and if its connected to the services
                 .route("debugService", r -> r.path("/debug/**")
-                    .filters(f -> f.filter(new DebugConnexionFilter()))
+                    .filters(f -> f.filter(new DebugConnexionFilter( 
+                        usersServiceUri,
+                        authRouteUri,
+                        locationsServiceUri,
+                        categoryServiceUri,
+                        reservationServiceUri,
+                        reviewServiceUri,
+                        notificationServiceUri
+                    )))
                     .uri("http://localhost:8080"))
                 .build();
     }

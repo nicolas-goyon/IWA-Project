@@ -17,29 +17,34 @@ import org.springframework.beans.factory.annotation.Value;
 
 
 @Component
-@Configuration
 public class DebugConnexionFilter implements GatewayFilter {
 
-    @Value("${routes.users-service.uri}")
     private String usersServiceUri;
-
-    @Value("${routes.auth-route.uri}")
     private String authRouteUri;
-
-    @Value("${routes.locations-service.uri}")
     private String locationsServiceUri;
-
-    @Value("${routes.category-service.uri}")
     private String categoryServiceUri;
-
-    @Value("${routes.reservation-service.uri}")
     private String reservationServiceUri;
-
-    @Value("${routes.review-service.uri}")
     private String reviewServiceUri;
-
-    @Value("${routes.notification-service.uri}")
     private String notificationServiceUri;
+
+
+    public DebugConnexionFilter(
+        String usersServiceUri,
+        String authRouteUri,
+        String locationsServiceUri,
+        String categoryServiceUri,
+        String reservationServiceUri,
+        String reviewServiceUri,
+        String notificationServiceUri
+    ) {
+        this.usersServiceUri = usersServiceUri;
+        this.authRouteUri = authRouteUri;
+        this.locationsServiceUri = locationsServiceUri;
+        this.categoryServiceUri = categoryServiceUri;
+        this.reservationServiceUri = reservationServiceUri;
+        this.reviewServiceUri = reviewServiceUri;
+        this.notificationServiceUri = notificationServiceUri;
+    }
 
 
     private boolean checkServiceConnected(String uri) {
