@@ -55,10 +55,7 @@ public class DebugConnexionFilter implements GatewayFilter {
             connection.setRequestMethod("GET");
             connection.connect();
             int code = connection.getResponseCode();
-            if (code != 200) {
-                System.out.println("=> Error while connecting to: " + uri);
-                return false;
-            }
+            System.out.println("=> Connection established with: " + uri + " (code: " + code + ")");
         } catch (Exception e) {
             System.out.println("=> Error while connecting to: " + uri);
             System.out.println(e);
