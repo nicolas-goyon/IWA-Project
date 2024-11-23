@@ -14,42 +14,73 @@ public class ApiGatewayConfig {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    
+    @Value("${routes.users-service.uri}")
+    private String usersServiceUri;
+
+    @Value("${routes.auth-route.uri}")
+    private String authRouteUri;
+
+    @Value("${routes.locations-service.uri}")
+    private String locationsServiceUri;
+
+    @Value("${routes.category-service.uri}")
+    private String categoryServiceUri;
+
+    @Value("${routes.reservation-service.uri}")
+    private String reservationServiceUri;
+
+    @Value("${routes.review-service.uri}")
+    private String reviewServiceUri;
+
+    @Value("${routes.notification-service.uri}")
+    private String notificationServiceUri;
+
+    @Value("${routes.messagerie-service.uri}")
+    private String messagerieServiceUri;
+
     // Bean pour configurer les routes avec Spring Cloud Gateway
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        // debug routes
+        System.out.println("usersServiceUri: " + usersServiceUri);
+        System.out.println("authRouteUri: " + authRouteUri);
+        System.out.println("locationsServiceUri: " + locationsServiceUri);
+        System.out.println("categoryServiceUri: " + categoryServiceUri);
+        System.out.println("reservationServiceUri: " + reservationServiceUri);
+        System.out.println("reviewServiceUri: " + reviewServiceUri);
+        System.out.println("notificationServiceUri: " + notificationServiceUri);
+        System.out.println("messagerieServiceUri: " + messagerieServiceUri);
+        
         return builder.routes()
                 .route("users-service", r -> r.path("/users/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8087"))
+                        .uri(usersServiceUri))
 
                 .route("auth-route", r -> r.path("/auth/**")
-                        .uri("http://localhost:8087"))
+                        .uri(authRouteUri))
 
                 .route("locations-service", r -> r.path("/locations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8082"))
+                        .uri(locationsServiceUri))
 
                 .route("category-service", r -> r.path("/categories/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8082"))
+                        .uri(categoryServiceUri))
 
                 .route("reservation-service", r -> r.path("/reservations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8083"))
+                        .uri(reservationServiceUri))
 
                 .route("review-service", r -> r.path("/reviews/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8083"))
+                        .uri(reviewServiceUri))
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8084"))
-                .route("messages-service", r -> r.path("/messages/**")
+                        .uri(notificationServiceUri))
+                .route("messagerie-service", r -> r.path("/messageries/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8085"))
-                .route("conversation-service", r -> r.path("/conversations/**")
-                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
-                        .uri("http://localhost:8085"))
-
+                        .uri(messagerieServiceUri))
                 .build();
     }
 }

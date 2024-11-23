@@ -1,0 +1,60 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        JAVA_VERSION: 21
+        # PROJECT_PATH: ${PROJECT_PATH}
+        MICROSERVICE_NAME: ${MS_NAME}
+        JWT_SECRET: ${JWT_SECRET}
+        USERS_SERVICE_URI: ${USERS_SERVICE_URI}
+        AUTH_ROUTE_URI: ${AUTH_ROUTE_URI}
+        LOCATIONS_SERVICE_URI: ${LOCATIONS_SERVICE_URI}
+        CATEGORY_SERVICE_URI: ${CATEGORY_SERVICE_URI}
+        RESERVATION_SERVICE_URI: ${RESERVATION_SERVICE_URI}
+        REVIEW_SERVICE_URI: ${REVIEW_SERVICE_URI}
+        NOTIFICATION_SERVICE_URI: ${NOTIFICATION_SERVICE_URI}
+        MESSAGERIE_SERVICE_URI: ${MESSAGERIE_SERVICE_URI}
+    image: app:latest
+    container_name: ${MS_NAME}
+    ports:
+      - ${MS_PORT}:${MS_PORT}
+    # environment:
+    #   - JAVA_VERSION=21
+    #   - PROJECT_PATH=${PROJECT_PATH}
+    #   - MICROSERVICE_NAME=${MS_NAME}
+    #   - JWT_SECRET=${JWT_SECRET}
+    #   - USERS_SERVICE_URI=${USERS_SERVICE_URI}
+    #   - AUTH_ROUTE_URI=${AUTH_ROUTE_URI}
+    #   - LOCATIONS_SERVICE_URI=${LOCATIONS_SERVICE_URI}
+    #   - CATEGORY_SERVICE_URI=${CATEGORY_SERVICE_URI}
+    #   - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
+    #   - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
+    #   - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
+    networks:
+      - iwa_network
+    
+  tests: 
+    build:
+      context: .
+      dockerfile: ../cicd/Dockerfile.test
+    image: tests:latest
+    container_name: ${MS_NAME}-tests
+    environment:
+      - JAVA_VERSION=21
+      - PROJECT_PATH=${PROJECT_PATH}
+      - MICROSERVICE_NAME=${MS_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - USERS_SERVICE_URI=${USERS_SERVICE_URI}
+      - AUTH_ROUTE_URI=${AUTH_ROUTE_URI}
+      - LOCATIONS_SERVICE_URI=${LOCATIONS_SERVICE_URI}
+      - CATEGORY_SERVICE_URI=${CATEGORY_SERVICE_URI}
+      - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
+      - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
+      - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
+      - MESSAGERIE_SERVICE_URI=${MESSAGERIE_SERVICE_URI}
+networks:
+  iwa_network:
+    external: true

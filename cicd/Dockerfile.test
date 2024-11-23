@@ -1,0 +1,20 @@
+# Use an official OpenJDK runtime as a parent image
+FROM docker.io/nicolasgoyon/run_spring_tests
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Define build path to ./
+ARG PROJECT_PATH=./
+
+# Copy the build.gradle and settings.gradle files
+COPY ${PROJECT_PATH}/build.gradle.kts ${PROJECT_PATH}/settings.gradle.kts ${PROJECT_PATH}/gradlew ${PROJECT_PATH}/gradlew.bat ./
+
+# Copy the source code
+COPY ${PROJECT_PATH}/src ./src
+
+# Copy the gradle directory
+COPY ${PROJECT_PATH}/gradle ./gradle
+
+# Set the permissions for the gradlew file and the shell script
+RUN chmod -R 777 /app
