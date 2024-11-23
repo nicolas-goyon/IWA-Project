@@ -46,17 +46,56 @@ services:
     networks:
       - iwa_network_user
   
-  # ms_reservation:
-  #   container_name: ms_reservation
-  #   image: ghcr.io/nicolas-goyon/ms_reservation-app:latest
-  #   networks:
-  #     - iwa_network
-  #   depends_on:
-  #     - ghcr.io/nicolas-goyon/ms_reservation-db:latest
-    
-# Create a network
+  ms_reservation:
+    container_name: ms-reservation
+    image: ghcr.io/nicolas-goyon/ms_reservation-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_reservation
+    depends_on:
+      - ms_reservation-db
+
+  ms_reservation-db:
+    container_name: db
+    image: ghcr.io/nicolas-goyon/ms_reservation-db:latest
+    networks:
+      - iwa_network_reservation
+
+  ms_location:
+    container_name: ms-location
+    image: ghcr.io/nicolas-goyon/ms_location-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_location
+    depends_on:
+      - ms_location-db
+
+  ms_location-db:
+    container_name: db
+    image: ghcr.io/nicolas-goyon/ms_location-db:latest
+    networks:
+      - iwa_network_location
+
+  ms_notification:
+    container_name: ms-notification
+    image: ghcr.io/nicolas-goyon/ms_notification-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_notification
+    depends_on:
+      - ms_notification-db
+
+  ms_notification-db: 
+    container_name: db
+    image: ghcr.io/nicolas-goyon/ms_notification-db:latest
+    networks:
+      - iwa_network_notification
+
+
+# Networks
 networks:
   iwa_network:
   iwa_network_user:
-
-
+  iwa_network_reservation:
+  iwa_network_location:
+  iwa_network_notification:

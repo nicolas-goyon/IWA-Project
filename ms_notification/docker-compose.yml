@@ -21,6 +21,7 @@ services:
 
   db:
     image: db:latest
+    container_name: ${MS_NAME}-db
     build: 
       context: .
       dockerfile: ../cicd/Dockerfile.db
