@@ -32,7 +32,7 @@ services:
       - ms_user
 
   ms_user:
-    container_name: ms_user
+    container_name: ms-user
     image: ghcr.io/nicolas-goyon/ms_user-app:latest
     networks:
       - iwa_network
