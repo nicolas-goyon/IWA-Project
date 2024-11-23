@@ -24,11 +24,11 @@ services:
     build: 
       context: .
       dockerfile: ../cicd/Dockerfile.db
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+      args:
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USERNAME}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_INITDB_ARGS: "--encoding=UTF8"
     volumes:
       # - pgdata:/var/lib/postgresql/data
       - ./database:/docker-entrypoint-initdb.d
