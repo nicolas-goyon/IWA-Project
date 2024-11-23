@@ -29,10 +29,15 @@ public class ReservationController {
     public List<Reservation> getAllReservation() {
         return reservationService.getAllReservation();
     }
+    @GetMapping("/all/host/{id}")
+    public List<Reservation> getReservationByHostId(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        return reservationService.getReservationByHostId(authorizationHeader,id);
+    }
     @GetMapping("/all/{id}")
     public List<Reservation> getReservationByTravelerId(@PathVariable Long id) {
         return reservationService.getReservationByTravelerId(id);
     }
+
     @GetMapping("/all/location/{id}")
     public List<Reservation> getReservationByLocationId(@PathVariable Long id) {
         return reservationService.getReservationByLocationId(id);

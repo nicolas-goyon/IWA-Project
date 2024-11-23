@@ -10,13 +10,16 @@ import com.projet_iwa.ms_reservation.model.Reservation;
 import com.projet_iwa.ms_reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.projet_iwa.ms_reservation.Util.datesOverlap;
 
@@ -46,6 +49,38 @@ public class ReservationService {
         return reservationRepository.findByIdLocation(id);
     }
 
+    public List<Reservation> getReservationByHostId(String authorizationHeader,Long id){
+        // Récupérer les id de location associée au host
+        String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
+
+        String locationUrl = apiGatewayUrl + "/locations/user/" + id;
+        ResponseEntity<List<LocationDTO>> response = Util.sendRequestWithJwt1(locationUrl, HttpMethod.GET, jwtToken, new ParameterizedTypeReference<List<LocationDTO>>() {}, null);
+
+        // Vérification de la réponse
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new IllegalArgumentException("Aucune location avec l'ID host : " + id + " a été trouvé.");
+        }
+        // map pour récupérer que les id pour chaque location
+        // Extract location IDs from the response
+        List<Long> locationIds = response.getBody().stream()
+                .map(LocationDTO::getId) // Assuming LocationDTO has a method getId()
+                .toList();
+
+        // Create an empty list to store all reservations
+        List<Reservation> allReservations = new ArrayList<>();
+
+        // Fetch reservations for each location ID
+        for (Long locationId : locationIds) {
+            // Use the method to fetch reservations by location ID
+            List<Reservation> reservations = reservationRepository.findByIdLocation(locationId);
+            if (reservations != null && !reservations.isEmpty()) {
+                allReservations.addAll(reservations);
+            }
+        }
+
+        // Return the consolidated list of reservations
+        return allReservations;
+    }
 
 
     public ReservationDTO getFullReservation(String authorizationHeader, Long reservationId) {
