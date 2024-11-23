@@ -7,6 +7,7 @@ import com.projet_iwa.ms_reservation.dto.ReservationDTO;
 import com.projet_iwa.ms_reservation.exceptions.InvalidReservationException;
 import com.projet_iwa.ms_reservation.exceptions.ReservationConflictException;
 import com.projet_iwa.ms_reservation.model.Reservation;
+import com.projet_iwa.ms_reservation.model.ReservationStatus;
 import com.projet_iwa.ms_reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,10 +55,16 @@ public class ReservationService {
         return reservationRepository.findByIdTraveler(id);
     }
     @Transactional
-    public List<Reservation> getReservationByLocationId(Long id){
+    public List<Reservation> getReservationByLocationId(Long id) {
+        // Met à jour les réservations expirées
         reservationRepository.updateExpiredReservations();
-        return reservationRepository.findByIdLocation(id);
+
+        // Récupère les réservations par ID de location et filtre celles ayant un statut REJECTED
+        return reservationRepository.findByIdLocation(id).stream()
+                .filter(reservation -> !reservation.getStatus().equals(ReservationStatus.REJECTED)) // Filtre les réservations rejetées
+                .collect(Collectors.toList());
     }
+
 
     @Transactional
     public List<Reservation> getReservationByHostId(String authorizationHeader,Long id){
@@ -158,6 +165,7 @@ public class ReservationService {
         // Vérification de disponibilité
         List<Reservation> existingReservations = reservationRepository.findByIdLocation(reservation.getIdLocation());
         boolean isAvailable = existingReservations.stream()
+                .filter(existingReservation -> !existingReservation.getStatus().equals(ReservationStatus.REJECTED)) // Filtre les réservations rejetées
                 .noneMatch(existingReservation -> datesOverlap(existingReservation, reservation));
 
         if (!isAvailable) {

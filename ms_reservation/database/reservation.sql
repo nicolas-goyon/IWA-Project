@@ -1,4 +1,4 @@
-CREATE TYPE reservation_status AS ENUM ('VALIDATED', 'EXPIRED', 'PENDING');
+CREATE TYPE reservation_status AS ENUM ('VALIDATED', 'EXPIRED', 'PENDING', 'REJECTED');
 
 CREATE TABLE reservation (
      id SERIAL PRIMARY KEY,              -- Identifiant unique pour la réservation
