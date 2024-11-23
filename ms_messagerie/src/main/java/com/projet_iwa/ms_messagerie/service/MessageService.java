@@ -40,7 +40,7 @@ public class MessageService {
 
 
     public List<Message> getMessages(Long conversationId) {
-        return messageRepository.findByConversationId(conversationId);
+        return messageRepository.findByIdconversation(conversationId);
     }
 }
 

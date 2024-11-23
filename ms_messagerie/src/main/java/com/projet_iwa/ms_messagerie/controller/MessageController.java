@@ -22,6 +22,7 @@ public class MessageController {
     private ConversationRepository conversationRepository;
 
     // Envoyer un message dans une conversation
+    @PostMapping
     public Message sendMessage(Message message) {
         return messageService.sendMessage(message);
     }

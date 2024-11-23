@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.projet_iwa.ms_messagerie.model.Conversation;
 
 @Entity
-@Table(name = "messages")
+@Table(name = "message")
 public class Message {
 
     @Id
@@ -23,7 +23,7 @@ public class Message {
 
     @Column(nullable = false)
     private LocalDateTime date;
-
+    
     // Getters et Setters
     public Long getId() {
         return id;
