@@ -41,7 +41,7 @@ services:
       - ms_user-db
 
   ms_user-db:
-    container_name: ms_user-db
+    container_name: db
     image: ghcr.io/nicolas-goyon/ms_user-db:latest
     networks:
       - iwa_network_user

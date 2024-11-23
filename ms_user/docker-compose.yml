@@ -13,7 +13,6 @@ services:
         - MS_PORT=${MS_PORT}
     ports:
       - ${MS_PORT}:${MS_PORT}
-    
     depends_on:
       - db
     networks:

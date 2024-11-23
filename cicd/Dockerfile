@@ -70,7 +70,6 @@ ENV MS_NAME=${MS_NAME}
 ENV MS_PORT=${MS_PORT}
 
 # Log the DB Url
-RUN echo "DB_URL: ${DB_URL}"
 
 COPY --from=builder /app/build/libs/*.jar /app/myapp.jar
 ENTRYPOINT ["java", "-jar", "/app/myapp.jar"]

@@ -74,6 +74,10 @@ public class ApiGatewayConfig {
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(notificationServiceUri))
+                // The debug service is here to test the gateway and if its connected to the services
+                .route("debugService", r -> r.path("/debug/**")
+                    .filters(f -> f.filter(new DebugConnexionFilter()))
+                    .uri("http://localhost:8080"))
                 .build();
     }
 }
