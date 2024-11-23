@@ -61,6 +61,7 @@ public class DebugConnexionFilter implements GatewayFilter {
             }
         } catch (Exception e) {
             System.out.println("=> Error while connecting to: " + uri);
+            System.out.println(e);
             return false;
         }
         return true;
