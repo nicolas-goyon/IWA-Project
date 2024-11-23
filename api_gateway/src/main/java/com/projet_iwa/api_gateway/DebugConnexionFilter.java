@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.springframework.beans.factory.annotation.Value;
+
 
 
 @Component
