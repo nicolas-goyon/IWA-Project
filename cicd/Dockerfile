@@ -7,7 +7,17 @@ WORKDIR /app
 # Define build path to ./
 ARG PROJECT_PATH=./
 
+# Define environment variables
+ARG DB_URL
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ARG API_GATEWAY_URL
+ARG MS_NAME
+ARG MS_PORT
+
+
 # if JWT_SECRET is not set, set it to "" as a default value
+ARG JWT_SECRET
 ENV JWT_SECRET=${JWT_SECRET:-""}
 
 # General environment variables
