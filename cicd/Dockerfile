@@ -7,6 +7,26 @@ WORKDIR /app
 # Define build path to ./
 ARG PROJECT_PATH=./
 
+# Define environment variables
+ARG DB_URL
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ARG API_GATEWAY_URL
+ARG MS_NAME
+ARG MS_PORT
+
+
+# if JWT_SECRET is not set, set it to "" as a default value
+# ARG JWT_SECRET
+# ENV JWT_SECRET=${JWT_SECRET:-""}
+
+# General environment variables
+ENV DB_URL=${DB_URL}
+ENV DB_USERNAME=${DB_USERNAME}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV API_GATEWAY_URL=${API_GATEWAY_URL}
+ENV MS_NAME=${MS_NAME}
+ENV MS_PORT=${MS_PORT}
 # Copy the build.gradle and settings.gradle files
 COPY ${PROJECT_PATH}/build.gradle.kts ${PROJECT_PATH}/settings.gradle.kts ${PROJECT_PATH}/gradlew ${PROJECT_PATH}/gradlew.bat ./
 
