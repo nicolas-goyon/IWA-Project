@@ -31,6 +31,7 @@ services:
     depends_on:
       - ms_user
 
+
   ms_user:
     container_name: ms-user
     image: ghcr.io/nicolas-goyon/ms_user-app:latest
@@ -41,10 +42,14 @@ services:
       - ms_user-db
 
   ms_user-db:
-    container_name: db
+    container_name: ms-user-db
     image: ghcr.io/nicolas-goyon/ms_user-db:latest
     networks:
       - iwa_network_user
+  
+
+
+
   
   ms_reservation:
     container_name: ms-reservation
@@ -56,10 +61,13 @@ services:
       - ms_reservation-db
 
   ms_reservation-db:
-    container_name: db
+    container_name: ms-reservation-db
     image: ghcr.io/nicolas-goyon/ms_reservation-db:latest
     networks:
       - iwa_network_reservation
+
+
+
 
   ms_location:
     container_name: ms-location
@@ -71,10 +79,13 @@ services:
       - ms_location-db
 
   ms_location-db:
-    container_name: db
+    container_name: ms-location-db
     image: ghcr.io/nicolas-goyon/ms_location-db:latest
     networks:
       - iwa_network_location
+
+
+
 
   ms_notification:
     container_name: ms-notification
@@ -86,7 +97,7 @@ services:
       - ms_notification-db
 
   ms_notification-db: 
-    container_name: db
+    container_name: ms-notification-db
     image: ghcr.io/nicolas-goyon/ms_notification-db:latest
     networks:
       - iwa_network_notification
