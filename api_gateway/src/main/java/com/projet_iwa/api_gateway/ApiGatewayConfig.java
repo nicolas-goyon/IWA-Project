@@ -11,10 +11,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 @Configuration
 public class ApiGatewayConfig {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
 
-    
     @Value("${routes.users-service.uri}")
     private String usersServiceUri;
 
