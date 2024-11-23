@@ -14,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -36,20 +37,31 @@ public class ReservationService {
     private String apiGatewayUrl;
 
     // Get a reservation by ID
+    @Transactional
     public Optional<Reservation> getReservationById(Long id) {
+        reservationRepository.updateExpiredReservations();
         return reservationRepository.findById(id);
+
     }
+    @Transactional
     public List<Reservation> getAllReservation() {
+        reservationRepository.updateExpiredReservations();
         return reservationRepository.findAll();
     }
+    @Transactional
     public List<Reservation> getReservationByTravelerId(Long id){
+        reservationRepository.updateExpiredReservations();
         return reservationRepository.findByIdTraveler(id);
     }
+    @Transactional
     public List<Reservation> getReservationByLocationId(Long id){
+        reservationRepository.updateExpiredReservations();
         return reservationRepository.findByIdLocation(id);
     }
 
+    @Transactional
     public List<Reservation> getReservationByHostId(String authorizationHeader,Long id){
+        reservationRepository.updateExpiredReservations();
         // Récupérer les id de location associée au host
         String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
 
@@ -83,7 +95,9 @@ public class ReservationService {
     }
 
 
+    @Transactional
     public ReservationDTO getFullReservation(String authorizationHeader, Long reservationId) {
+        reservationRepository.updateExpiredReservations();
         System.out.println("Début de la récupération de la réservation avec l'ID " + reservationId);
 
         // Récupérer la réservation
