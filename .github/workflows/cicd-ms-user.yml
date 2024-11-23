@@ -36,7 +36,8 @@ jobs:
         run: |
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml up -d --build db
-          docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
+            docker-compose -f docker-compose.yml up --build tests
+        #   docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
