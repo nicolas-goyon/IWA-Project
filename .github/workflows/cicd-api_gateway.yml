@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Wait for Workflow Action
-      uses: kamilchodola/wait-for-workflow-action@1.1.0
+      uses: roblframpton/wait-for-workflow-action@latest
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         workflow_id: "cicd-ms-user.yml"
