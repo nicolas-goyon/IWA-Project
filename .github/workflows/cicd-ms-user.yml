@@ -44,6 +44,16 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml logs -f tests
 
+      - name: Log the database container
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml logs db
+
+      - name: List files in /app of the container depth = 2
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker exec $(docker-compose -f docker-compose.yml ps -q tests) ls -R /app
+
       - name: Copy test reports
         run: |
           cd ${{ env.PROJECT_PATH }}
