@@ -1,0 +1,133 @@
+# Image names are in the format ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+# The database image name is in the format ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+
+# Microservices names
+# - ms_user
+# - ms_reservation
+# - ms_location
+# - ms_notification
+
+# API Gateway
+# - api_gateway
+
+# Repository owner
+# - nicolas-goyon
+
+# Dockercompose for deployment, images are already built and pushed to ghcr.io
+# The all microservice got a db and app image
+# Only the api has a exposed port
+# All microservices have its own network for the communication between the db and app
+# All microservice depends on the db image
+# The microservices and the api_gateway are in the same network
+# The exposed port is in the .env file as API_GATEWAY_PORT and API_GATEWAY_PUBLIC_PORT
+services:
+
+  tests: 
+    build:
+      context: .
+      dockerfile: ./Dockerfile.test
+      args:
+        - JAVA_VERSION=21
+        - MICROSERVICE_NAME=${MS_NAME}
+        - JWT_SECRET=${JWT_SECRET}
+        - USERS_SERVICE_URI=${USERS_SERVICE_URI}
+        - AUTH_ROUTE_URI=${AUTH_ROUTE_URI}
+        - LOCATIONS_SERVICE_URI=${LOCATIONS_SERVICE_URI}
+        - CATEGORY_SERVICE_URI=${CATEGORY_SERVICE_URI}
+        - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
+        - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
+        - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
+    container_name: ${MS_NAME}-tests
+    volumes:
+      - reports:/app/reports
+    depends_on:
+      - ms_user
+      - ms_reservation
+      - ms_location
+      - ms_notification
+    networks:
+      - iwa_network
+
+
+  ms_user:
+    container_name: ms-user
+    image: ghcr.io/nicolas-goyon/ms_user-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_user
+    depends_on:
+      - ms_user-db
+
+  ms_user-db:
+    container_name: ms-user-db
+    image: ghcr.io/nicolas-goyon/ms_user-db:latest
+    networks:
+      - iwa_network_user
+  
+
+
+
+  
+  ms_reservation:
+    container_name: ms-reservation
+    image: ghcr.io/nicolas-goyon/ms_reservation-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_reservation
+    depends_on:
+      - ms_reservation-db
+
+  ms_reservation-db:
+    container_name: ms-reservation-db
+    image: ghcr.io/nicolas-goyon/ms_reservation-db:latest
+    networks:
+      - iwa_network_reservation
+
+
+
+
+  ms_location:
+    container_name: ms-location
+    image: ghcr.io/nicolas-goyon/ms_location-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_location
+    depends_on:
+      - ms_location-db
+
+  ms_location-db:
+    container_name: ms-location-db
+    image: ghcr.io/nicolas-goyon/ms_location-db:latest
+    networks:
+      - iwa_network_location
+
+
+
+
+  ms_notification:
+    container_name: ms-notification
+    image: ghcr.io/nicolas-goyon/ms_notification-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_notification
+    depends_on:
+      - ms_notification-db
+
+  ms_notification-db: 
+    container_name: ms-notification-db
+    image: ghcr.io/nicolas-goyon/ms_notification-db:latest
+    networks:
+      - iwa_network_notification
+
+
+# Networks
+networks:
+  iwa_network:
+  iwa_network_user:
+  iwa_network_reservation:
+  iwa_network_location:
+  iwa_network_notification:
+
+# Volumes
+volumes:
+  reports:

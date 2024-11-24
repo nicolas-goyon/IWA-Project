@@ -80,9 +80,9 @@ public class DebugConnexionFilter implements GatewayFilter {
         allConnected &= checkServiceConnected(usersServiceUri);
         allConnected &= checkServiceConnected(authRouteUri);
         allConnected &= checkServiceConnected(locationsServiceUri);
-        allConnected &= checkServiceConnected(categoryServiceUri);
+        // allConnected &= checkServiceConnected(categoryServiceUri);
         allConnected &= checkServiceConnected(reservationServiceUri);
-        allConnected &= checkServiceConnected(reviewServiceUri);
+        // allConnected &= checkServiceConnected(reviewServiceUri);
         allConnected &= checkServiceConnected(notificationServiceUri);
 
         if (!allConnected) {
@@ -92,8 +92,9 @@ public class DebugConnexionFilter implements GatewayFilter {
         }
 
         
-        // Continuer le passage de la requête avec les en-têtes modifiés
-        return chain.filter(exchange);
+        // Finir la chaine et renvoyer 200
+        exchange.getResponse().setStatusCode(HttpStatus.OK);
+        return exchange.getResponse().setComplete();
     }
 }
 

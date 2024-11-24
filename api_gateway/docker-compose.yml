@@ -40,6 +40,8 @@ services:
         - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
     image: tests:latest
     container_name: ${MS_NAME}-tests
+    networks:
+      - iwa_network
 networks:
   iwa_network:
     external: true
