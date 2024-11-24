@@ -1,4 +1,4 @@
-CREATE TYPE reservation_status AS ENUM ('VALIDATED', 'REJECTED', 'PENDING');
+CREATE TYPE reservation_status AS ENUM ('VALIDATED', 'EXPIRED', 'PENDING', 'REJECTED');
 
 CREATE TABLE reservation (
      id SERIAL PRIMARY KEY,              -- Identifiant unique pour la réservation
@@ -6,7 +6,7 @@ CREATE TABLE reservation (
      idtraveler INT NOT NULL,            -- Identifiant du voyageur
      date_start DATE NOT NULL,           -- Date de début de la réservation
      date_end DATE NOT NULL,             -- Date de fin de la réservation
-     status reservation_status DEFAULT 'PENDING';     -- Indique si la réservation est validée
+     status reservation_status DEFAULT 'PENDING'     -- Indique si la réservation est validée
 );
 
 CREATE TABLE review (
