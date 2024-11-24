@@ -75,7 +75,7 @@ public class ApiGatewayConfig {
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(notificationServiceUri))
-                .route("messagerie-service", r -> r.path("/messageries/**")
+                .route("messagerie-service", r -> r.path("/conversations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(messagerieServiceUri))
                 .build();
