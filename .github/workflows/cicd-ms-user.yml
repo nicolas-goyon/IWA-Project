@@ -39,11 +39,21 @@ jobs:
             docker-compose -f docker-compose.yml up --build tests
         #   docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
 
+      - name: Wait for tests to finish
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml logs -f tests
+
+      - name: Copy test reports
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker cp $(docker-compose -f docker-compose.yml ps -q tests):/app/reports ./app
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.MICROSERVICE_NAME }}-tests-reports
-          path: ${{ env.PROJECT_PATH }}/reports
+          path: ${{ env.PROJECT_PATH }}/app/reports
 
       - name: Clean up
         run: |

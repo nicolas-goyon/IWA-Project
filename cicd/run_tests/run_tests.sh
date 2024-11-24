@@ -15,6 +15,8 @@ mkdir -p $DEST_DIR
 # Move the reports
 mv $SOURCE_DIR/* $DEST_DIR/
 
+ls -la $DEST_DIR
+
 # Check the exit code and print the appropriate message
 if [ $TEST_EXIT_CODE -ne 0 ]; then
   echo "Tests failed with exit code $TEST_EXIT_CODE"
