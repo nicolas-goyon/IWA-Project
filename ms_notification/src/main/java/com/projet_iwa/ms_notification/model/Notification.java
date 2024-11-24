@@ -11,16 +11,26 @@ public class Notification {
     private Long id;
 
     @Column(nullable = false)
-    private String icon;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
-    private Integer iduser;
+    private Long iduser;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String redirection;
+    @Column(nullable = false)
+    private String body;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @Column(nullable = true)
+    private String icon;
 
     // Getters et Setters
 
@@ -32,13 +42,14 @@ public class Notification {
         this.id = id;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getBody() {
+        return body;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setBody(String body) {
+        this.body = body;
     }
+
 
     public String getTitle() {
         return title;
@@ -48,11 +59,11 @@ public class Notification {
         this.title = title;
     }
 
-    public Integer getIduser() {
+    public Long getIduser() {
         return iduser;
     }
 
-    public void setIduser(Integer iduser) {
+    public void setIduser(Long iduser) {
         this.iduser = iduser;
     }
 
@@ -68,10 +79,11 @@ public class Notification {
 
     public Notification() {}
 
-    public Notification(String icon, String title, Integer iduser, String redirection) {
-        this.icon = icon;
+    public Notification(String body, String title, Long iduser, String redirection, String icon) {
+        this.body = body;
         this.title = title;
         this.iduser = iduser;
         this.redirection = redirection;
+        this.icon = icon;
     }
 }

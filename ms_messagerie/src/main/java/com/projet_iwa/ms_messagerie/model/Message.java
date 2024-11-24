@@ -2,7 +2,6 @@ package com.projet_iwa.ms_messagerie.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import com.projet_iwa.ms_messagerie.model.Conversation;
 
 @Entity
 @Table(name = "message")
@@ -21,9 +20,9 @@ public class Message {
     @Column(nullable = false)
     private String text;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime date;
-    
+
     // Getters et Setters
     public Long getId() {
         return id;
