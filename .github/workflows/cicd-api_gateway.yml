@@ -7,15 +7,42 @@ on:
   pull_request:
     branches:
       - '**'
-
+  workflow_run:
+      workflows: 
+      - MS_USER CI/CD Pipeline
+      - MS_RESERVATION CI/CD Pipeline
+      - MS_LOCATION CI/CD Pipeline
+      - MS_NOTIFICATION CI/CD Pipeline
+      branches:
+      - main
+      types:
+      - completed
 env:
   JAVA_VERSION: '21'
   PROJECT_PATH: api_gateway
   MICROSERVICE_NAME: api_gateway
 
 jobs:
+  wait-for-workflow-user:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Wait for Workflow Action
+      uses: kamilchodola/wait-for-workflow-action@1.1.0
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        workflow_id: "cicd-ms-user.yml"
+        max_wait_minutes: 10
+        interval: 10
+        timeout: 600
+        org_name: ${{ github.repository_owner }}
+        repo_name: ${{ github.event.repository.name }}
+        ref: ${{ github.ref }}
+
+
   build-and-test:
     runs-on: ubuntu-latest
+    # Depends on : "on-success" job of all microservices
+    needs: wait-for-workflow-user
 
     steps:
     - name: Checkout code
