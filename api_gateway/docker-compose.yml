@@ -39,6 +39,18 @@ services:
     build:
       context: .
       dockerfile: ../cicd/Dockerfile.test
+      args:
+        - JAVA_VERSION=21
+        - PROJECT_PATH=${PROJECT_PATH}
+        - MICROSERVICE_NAME=${MS_NAME}
+        - JWT_SECRET=${JWT_SECRET}
+        - USERS_SERVICE_URI=${USERS_SERVICE_URI}
+        - AUTH_ROUTE_URI=${AUTH_ROUTE_URI}
+        - LOCATIONS_SERVICE_URI=${LOCATIONS_SERVICE_URI}
+        - CATEGORY_SERVICE_URI=${CATEGORY_SERVICE_URI}
+        - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
+        - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
+        - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
     image: tests:latest
     container_name: ${MS_NAME}-tests
     environment:
