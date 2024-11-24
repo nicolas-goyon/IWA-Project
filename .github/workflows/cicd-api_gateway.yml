@@ -26,18 +26,25 @@ jobs:
   wait-for-workflow-user:
     runs-on: ubuntu-latest
     steps:
-    - name: Wait for Workflow Action
-      uses: roblframpton/wait-for-workflow-action@latest
+    # - name: Wait for Workflow Action
+    #   uses: roblframpton/wait-for-workflow-action@latest
+    #   with:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     workflow_id: "cicd-ms-user.yml"
+    #     max_wait_minutes: 10
+    #     interval: 10
+    #     timeout: 600
+    #     org_name: ${{ github.repository_owner }}
+    #     repo_name: ${{ github.event.repository.name }}
+    #     ref: ${{ github.ref }}
+    - name: Wait on Workflow
+      uses: lucasssvaz/wait-on-workflow@v1
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        workflow_id: "cicd-ms-user.yml"
-        max_wait_minutes: 10
-        interval: 10
+        workflow: "cicd-ms-user.yml"
+        max-wait: 3
+        interval: 5
         timeout: 600
-        org_name: ${{ github.repository_owner }}
-        repo_name: ${{ github.event.repository.name }}
-        ref: ${{ github.ref }}
-
+        sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   build-and-test:
     runs-on: ubuntu-latest
