@@ -7,37 +7,17 @@ on:
   pull_request:
     branches:
       - '**'
-  workflow_run:
-      workflows: 
-      - MS_USER CI/CD Pipeline
-      - MS_RESERVATION CI/CD Pipeline
-      - MS_LOCATION CI/CD Pipeline
-      - MS_NOTIFICATION CI/CD Pipeline
-      branches:
-      - main
-      types:
-      - completed
+
 env:
   JAVA_VERSION: '21'
   PROJECT_PATH: api_gateway
   MICROSERVICE_NAME: api_gateway
 
 jobs:
-  wait-for-workflow-user:
+  wait-for-workflows:
     runs-on: ubuntu-latest
     steps:
-    # - name: Wait for Workflow Action
-    #   uses: roblframpton/wait-for-workflow-action@latest
-    #   with:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     workflow_id: "cicd-ms-user.yml"
-    #     max_wait_minutes: 10
-    #     interval: 10
-    #     timeout: 600
-    #     org_name: ${{ github.repository_owner }}
-    #     repo_name: ${{ github.event.repository.name }}
-    #     ref: ${{ github.ref }}
-    - name: Wait on Workflow
+    - name: Wait on User Microservice CI/CD
       uses: lucasssvaz/wait-on-workflow@v1
       with:
         workflow: "cicd-ms-user.yml"
@@ -45,11 +25,41 @@ jobs:
         interval: 5
         timeout: 600
         sha: ${{ github.event.pull_request.head.sha || github.sha }}
+      
+    - name: Wait on Location Microservice CI/CD
+      uses: lucasssvaz/wait-on-workflow@v1
+      with:
+        workflow: "cicd-ms-location.yml"
+        max-wait: 3
+        interval: 5
+        timeout: 600
+        sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    - name: Wait on Notification Microservice CI/CD
+      uses: lucasssvaz/wait-on-workflow@v1
+      with:
+        workflow: "cicd-ms-notification.yml"
+        max-wait: 3
+        interval: 5
+        timeout: 600
+        sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
+    - name: Wait on Reservation Microservice CI/CD
+      uses: lucasssvaz/wait-on-workflow@v1
+      with:
+        workflow: "cicd-ms-reservation.yml"
+        max-wait: 3
+        interval: 5
+        timeout: 600
+        sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
+
+
 
   build-and-test:
     runs-on: ubuntu-latest
     # Depends on : "on-success" job of all microservices
-    needs: wait-for-workflow-user
+    needs: wait-for-workflows
 
     steps:
     - name: Checkout code
