@@ -41,7 +41,6 @@ services:
       dockerfile: ../cicd/Dockerfile.test
       args:
         - JAVA_VERSION=21
-        - PROJECT_PATH=${PROJECT_PATH}
         - MICROSERVICE_NAME=${MS_NAME}
         - JWT_SECRET=${JWT_SECRET}
         - USERS_SERVICE_URI=${USERS_SERVICE_URI}
