@@ -34,8 +34,8 @@ jobs:
 
       - name: run docker-compose of db and tests
         run: |
-          cd ${{ env.PROJECT_PATH }}
-          docker-compose -f docker-compose.yml up -d --build db
+            cd ${{ env.PROJECT_PATH }}
+            docker-compose -f docker-compose.yml up -d --build db
             docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
 
       - name: Wait for tests to finish

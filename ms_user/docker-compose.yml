@@ -1,6 +1,5 @@
 services:
   app:
-    image: app:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile
@@ -20,7 +19,6 @@ services:
       - default
 
   db:
-    image: db:latest
     container_name: ${MS_NAME}-db
     build: 
       context: .
@@ -31,7 +29,6 @@ services:
         POSTGRES_PASSWORD: ${DB_PASSWORD}
         POSTGRES_INITDB_ARGS: "--encoding=UTF8"
     volumes:
-      # - pgdata:/var/lib/postgresql/data
       - ./database:/docker-entrypoint-initdb.d
     ports:
       - ${DB_PORT}:${DB_PORT}
@@ -39,7 +36,6 @@ services:
       - default
 
   tests:
-    image: tests:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile.test
@@ -72,5 +68,3 @@ networks:
     external: true
   # Conection to bd
   default:
-volumes:
-  pgdata:
