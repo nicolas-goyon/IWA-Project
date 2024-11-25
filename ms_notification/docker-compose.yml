@@ -1,6 +1,5 @@
 services:
   app:
-    image: app:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile
@@ -21,7 +20,6 @@ services:
       - default
 
   db:
-    image: db:latest
     container_name: ${MS_NAME}-db
     build: 
       context: .
@@ -41,7 +39,6 @@ services:
 
 
   tests:
-    image: tests:latest
     build:
       context: .
       dockerfile: ../cicd/Dockerfile.test

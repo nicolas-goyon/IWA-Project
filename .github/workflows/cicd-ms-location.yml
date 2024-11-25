@@ -88,8 +88,9 @@ jobs:
   
       - name: Tag Docker images
         run: |
-          docker tag app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-          docker tag db ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+          docker images
+          docker tag ${{ env.MICROSERVICE_NAME }}-app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+          docker tag ${{ env.MICROSERVICE_NAME }}-db ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
   
       - name: Push Docker images to GitHub Container Registry
         run: |
