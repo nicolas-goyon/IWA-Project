@@ -16,6 +16,7 @@ class ApiGatewayApplicationTests {
     @BeforeEach
     void setUp() {
         webTestClient = WebTestClient.bindToServer()
+                .configureClient()
                 .baseUrl("http://localhost:8080")
                 .responseTimeout(Duration.ofSeconds(180))
                 .build();
