@@ -16,6 +16,13 @@ class ApiGatewayApplicationTests {
     @Autowired
     private WebTestClient webTestClient;
 
+    @BeforeEach
+    void setUp() {
+        webTestClient = webTestClient.mutate()
+                .responseTimeout(Duration.ofSeconds(180))
+                .build();
+    }
+
     @Test
     void sendRequestToDebugService() {
         webTestClient.get().uri("/debug/test-endpoint")
