@@ -30,11 +30,15 @@ for /f "tokens=1* delims==" %%a in ('set') do (
     if not "%%a"=="" (
         if not "%%a"=="args" (
             if not "%%a"=="ENV_FILE" (
+<<<<<<< HEAD
                 REM Check if the variable is defined in the .env file
                 findstr /c:"%%a=" %ENV_FILE% >nul
                 if !errorlevel! equ 0 (
                     set "args=!args! --%%a=%%b"
                 )
+=======
+                set "args=!args! --%%a=%%b"
+>>>>>>> ac32d61604dfca815e9312fb1f2412a71b28cab8
             )
         )
     )
@@ -43,9 +47,12 @@ for /f "tokens=1* delims==" %%a in ('set') do (
 REM Remove the leading space from the args string
 set "args=!args:~1!"
 
+<<<<<<< HEAD
 REM Echo the command to be run
 echo gradlew bootRun --args="!args!"
 
+=======
+>>>>>>> ac32d61604dfca815e9312fb1f2412a71b28cab8
 REM Run the gradlew command with the constructed arguments
 ./gradlew bootRun --args="!args!"
 

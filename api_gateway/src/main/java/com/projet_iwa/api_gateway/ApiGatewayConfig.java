@@ -12,10 +12,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 @Configuration
 public class ApiGatewayConfig {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
 
-    
     @Value("${routes.users-service.uri}")
     private String usersServiceUri;
 
@@ -37,6 +34,9 @@ public class ApiGatewayConfig {
     @Value("${routes.notification-service.uri}")
     private String notificationServiceUri;
 
+    @Value("${routes.messagerie-service.uri}")
+    private String messagerieServiceUri;
+
     // Bean pour configurer les routes avec Spring Cloud Gateway
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -48,6 +48,7 @@ public class ApiGatewayConfig {
         System.out.println("reservationServiceUri: " + reservationServiceUri);
         System.out.println("reviewServiceUri: " + reviewServiceUri);
         System.out.println("notificationServiceUri: " + notificationServiceUri);
+        System.out.println("messagerieServiceUri: " + messagerieServiceUri);
         
         return builder.routes()
                 .route("users-service", r -> r.path("/users/**")
@@ -58,10 +59,10 @@ public class ApiGatewayConfig {
                         .uri(authRouteUri))
 
                 .route("locations-service", r -> r.path("/locations/**")
-                        // .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(locationsServiceUri))
 
-                .route("category-service", r -> r.path("/category/**")
+                .route("category-service", r -> r.path("/categories/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(categoryServiceUri))
 
@@ -75,6 +76,7 @@ public class ApiGatewayConfig {
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(notificationServiceUri))
+<<<<<<< HEAD
                 // The debug service is here to test the gateway and if its connected to the services
                 .route("debugService", r -> r.path("/debug/**")
                     .filters(f -> f.filter(new DebugConnexionFilter( 
@@ -87,6 +89,11 @@ public class ApiGatewayConfig {
                         notificationServiceUri
                     )))
                     .uri("http://localhost:8080"))
+=======
+                .route("messagerie-service", r -> r.path("/conversations/**")
+                        .filters(f -> f.filter(new JwtAuthentificationFilter()))
+                        .uri(messagerieServiceUri))
+>>>>>>> ac32d61604dfca815e9312fb1f2412a71b28cab8
                 .build();
     }
 }

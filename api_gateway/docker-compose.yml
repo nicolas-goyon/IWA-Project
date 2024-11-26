@@ -7,7 +7,6 @@ services:
       dockerfile: ./Dockerfile
       args:
         JAVA_VERSION: 21
-        # PROJECT_PATH: ${PROJECT_PATH}
         MICROSERVICE_NAME: ${MS_NAME}
         JWT_SECRET: ${JWT_SECRET}
         USERS_SERVICE_URI: ${USERS_SERVICE_URI}
@@ -17,30 +16,13 @@ services:
         RESERVATION_SERVICE_URI: ${RESERVATION_SERVICE_URI}
         REVIEW_SERVICE_URI: ${REVIEW_SERVICE_URI}
         NOTIFICATION_SERVICE_URI: ${NOTIFICATION_SERVICE_URI}
+        MESSAGERIE_SERVICE_URI: ${MESSAGERIE_SERVICE_URI}
     image: app:latest
     ports:
       - ${MS_PORT}:8080
     networks:
       - iwa_network
     
-  tests: 
-    build:
-      context: .
-      dockerfile: ./Dockerfile.test
-      args:
-        - JAVA_VERSION=21
-        - MICROSERVICE_NAME=${MS_NAME}
-        - JWT_SECRET=${JWT_SECRET}
-        - USERS_SERVICE_URI=${USERS_SERVICE_URI}
-        - AUTH_ROUTE_URI=${AUTH_ROUTE_URI}
-        - LOCATIONS_SERVICE_URI=${LOCATIONS_SERVICE_URI}
-        - CATEGORY_SERVICE_URI=${CATEGORY_SERVICE_URI}
-        - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
-        - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
-        - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
-    container_name: ${MS_NAME}-tests
-    networks:
-      - iwa_network
 networks:
   iwa_network:
     external: true
