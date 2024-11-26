@@ -1,25 +1,3 @@
-# Image names are in the format ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-# The database image name is in the format ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
-
-# Microservices names
-# - ms_user
-# - ms_reservation
-# - ms_location
-# - ms_notification
-
-# API Gateway
-# - api_gateway
-
-# Repository owner
-# - nicolas-goyon
-
-# Dockercompose for deployment, images are already built and pushed to ghcr.io
-# The all microservice got a db and app image
-# Only the api has a exposed port
-# All microservices have its own network for the communication between the db and app
-# All microservice depends on the db image
-# The microservices and the api_gateway are in the same network
-# The exposed port is in the .env file as API_GATEWAY_PORT and API_GATEWAY_PUBLIC_PORT
 services:
 
   tests: 
