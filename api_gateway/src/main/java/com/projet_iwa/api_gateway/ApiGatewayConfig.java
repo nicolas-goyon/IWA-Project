@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.projet_iwa.api_gateway.JwtAuthentificationFilter;
+import com.projet_iwa.api_gateway.DebugConnexionFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 
@@ -75,9 +76,24 @@ public class ApiGatewayConfig {
                 .route("notification-service", r -> r.path("/notifications/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(notificationServiceUri))
+<<<<<<< HEAD
+                // The debug service is here to test the gateway and if its connected to the services
+                .route("debugService", r -> r.path("/debug/**")
+                    .filters(f -> f.filter(new DebugConnexionFilter( 
+                        usersServiceUri,
+                        authRouteUri,
+                        locationsServiceUri,
+                        categoryServiceUri,
+                        reservationServiceUri,
+                        reviewServiceUri,
+                        notificationServiceUri
+                    )))
+                    .uri("http://localhost:8080"))
+=======
                 .route("messagerie-service", r -> r.path("/conversations/**")
                         .filters(f -> f.filter(new JwtAuthentificationFilter()))
                         .uri(messagerieServiceUri))
+>>>>>>> ac32d61604dfca815e9312fb1f2412a71b28cab8
                 .build();
     }
 }

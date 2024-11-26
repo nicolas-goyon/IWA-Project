@@ -5,23 +5,32 @@ on:
       - API_GATEWAY CI/CD Pipeline
       - MS_USER CI/CD Pipeline
       - MS_RESERVATION CI/CD Pipeline
+      - MS_LOCATION CI/CD Pipeline
+      - MS_NOTIFICATION CI/CD Pipeline
     branches:
       - main
     types:
       - completed
 jobs:
+  on-failure: 
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+        # Exit with a non-zero status code to indicate failure
+    - run: |
+        echo 'The triggering workflow failed'
+        exit 1
+        
+  on-other:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' && github.event.workflow_run.conclusion != 'failure' }}
+    steps:
+        # Exit with a non-zero status code to indicate failure
+    - run: echo 'The triggering workflow did not pass nor fail' && exit 1 
+
+
   on-success:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - run: echo 'The triggering workflow passed'
-  on-failure: 
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-    - run: echo 'The triggering workflow failed'
-  on-other:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion != 'success' && github.event.workflow_run.conclusion != 'failure' }}
-    steps:
-    - run: echo 'The triggering workflow did not pass nor fail'

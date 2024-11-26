@@ -30,13 +30,28 @@ jobs:
           sudo apt-get install -y docker-compose
   
       - name: Create a network
-        run: docker network create iwa_network 
+        run: docker network create iwa_network
 
       - name: run docker-compose of db and tests
         run: |
           cd ${{ env.PROJECT_PATH }}
-          docker-compose -f docker-compose.yml up -d --build db
-          docker-compose -f docker-compose.yml up --build tests
+            docker-compose -f docker-compose.yml up -d --build db
+            docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
+
+      - name: Wait for tests to finish
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml logs -f tests
+
+      - name: Log the database container
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml logs db
+
+      - name: List files in ./reports depth = 2
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          ls -R ./reports
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -73,8 +88,9 @@ jobs:
   
       - name: Tag Docker images
         run: |
-          docker tag app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-          docker tag db ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+          docker images
+          docker tag ${{ env.MICROSERVICE_NAME }}_app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+          docker tag ${{ env.MICROSERVICE_NAME }}_db ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
   
       - name: Push Docker images to GitHub Container Registry
         run: |

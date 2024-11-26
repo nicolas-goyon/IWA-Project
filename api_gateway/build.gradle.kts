@@ -28,6 +28,8 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.5")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.3")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 dependencyManagement {
