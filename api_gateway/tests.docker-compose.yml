@@ -39,7 +39,7 @@ services:
         - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
     container_name: ${MS_NAME}-tests
     volumes:
-      - reports:/app/reports
+      - ./reports:/app/reports
     depends_on:
       - ms_user
       - ms_reservation

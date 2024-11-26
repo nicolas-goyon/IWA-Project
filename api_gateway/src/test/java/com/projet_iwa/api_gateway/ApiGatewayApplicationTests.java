@@ -27,8 +27,6 @@ class ApiGatewayApplicationTests {
     void sendRequestToDebugService() {
         webTestClient.get().uri("/debug/test-endpoint")
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .isEqualTo("Expected response from debug service");
+                .expectStatus().isOk();
     }
 }

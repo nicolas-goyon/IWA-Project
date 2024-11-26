@@ -38,7 +38,6 @@ services:
         - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
         - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
         - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
-    image: tests:latest
     container_name: ${MS_NAME}-tests
     networks:
       - iwa_network
