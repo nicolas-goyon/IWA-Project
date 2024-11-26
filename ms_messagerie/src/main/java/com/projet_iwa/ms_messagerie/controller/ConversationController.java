@@ -39,6 +39,10 @@ public class ConversationController {
     public List<Message> getAllMessageInConv(@PathVariable Long id) {
         return conversationService.getAllMessageInConv(id);
     }
+    @GetMapping("lastmessage/{id}")
+    public Message getLastMessageInConv(@PathVariable Long id) {
+        return conversationService.getLastMessageInConv(id);
+    }
 
 
 

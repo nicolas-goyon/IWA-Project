@@ -64,5 +64,7 @@ public class ConversationService {
         return messageRepository.findByIdconversation(id);
     }
 
-
+    public Message getLastMessageInConv(Long id){
+        return messageRepository.findLastMessageByIdconversation(id);
+    }
 }
