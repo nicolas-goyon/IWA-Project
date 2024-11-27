@@ -1,0 +1,22 @@
+services:
+  kafka-zookeeper:
+    container_name: ${KAFKA_HOST}
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
+    environment:
+      - ZOOKEEPER_HOST=${ZOOKEEPER_HOST}
+      - ZOOKEEPER_PORT=${ZOOKEEPER_PORT}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_BROKER_ID=${KAFKA_BROKER_ID}
+      - KAFKA_GROUP_ID=${KAFKA_GROUP_ID}
+      - KAFKA_TOPIC_NAME=${KAFKA_TOPIC_NAME}
+    networks:
+      - iwa_network
+
+networks:
+  iwa_network:
+    external: true

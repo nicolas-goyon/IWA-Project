@@ -37,6 +37,13 @@ services:
     networks:
       - default
 
+  kafka:
+    container_name: kafka
+    image: ghcr.io/nicolas-goyon/kafka:latest
+    ports:
+      - "${SPRING_KAFKA_BOOTSTRAP_SERVERS_PORT}:${SPRING_KAFKA_BOOTSTRAP_SERVERS_PORT}"
+    networks:
+      - iwa_network
 
   tests:
     build:
@@ -66,6 +73,7 @@ services:
     - SPRING_KAFKA_TOPIC_NAME=${SPRING_KAFKA_TOPIC_NAME}
     depends_on:
       - db
+      - kafka
     volumes:
       - ./reports:/app/reports
     networks:

@@ -20,8 +20,22 @@ env:
   MICROSERVICE_NAME: ms_notification
 
 jobs:
+    
+    wait-for-kafka:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Wait on User Microservice CI/CD
+          uses: lucasssvaz/wait-on-workflow@v1
+          with:
+              workflow: "cicd-kafka.yml"
+              max-wait: 3
+              interval: 5
+              timeout: 600
+              sha: ${{ github.event.pull_request.head.sha || github.sha }}
+      
     build-and-test:
       runs-on: ubuntu-latest
+      needs: wait-for-kafka
   
       steps:
       - name: Checkout code

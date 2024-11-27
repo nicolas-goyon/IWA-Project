@@ -1,31 +1,34 @@
-# Utiliser une image de base Alpine
-FROM alpine:3.14
+# Use the official OpenJDK runtime as a parent image
+FROM openjdk:8-jre-alpine
 
-# Installer les dépendances nécessaires
-RUN apk update && \
-    apk add --no-cache openjdk11-jre wget tar && \
-    rm -rf /var/cache/apk/*
+# Set environment variables
+ENV ZOOKEEPER_HOST=${ZOOKEEPER_HOST:-localhost}
+ENV ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2181}
+ENV KAFKA_HOST=${KAFKA_HOST:-localhost}
+ENV KAFKA_PORT=${KAFKA_PORT:-9092}
+ENV KAFKA_BROKER_ID=${KAFKA_BROKER_ID:-0}
+ENV KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}
+ENV KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST}:${KAFKA_PORT}
+ENV KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:${KAFKA_PORT}
 
-# Définir des variables d'environnement pour Kafka
-ENV SPRING_KAFKA_BOOTSTRAP_SERVERS_HOST=localhost
-ENV SPRING_KAFKA_BOOTSTRAP_SERVERS_PORT=9092
-ENV SPRING_KAFKA_CONSUMER_GROUP_ID=notification-group
-ENV SPRING_KAFKA_TOPIC_NAME=message-notification
+# Optional: Set user group ID and topic name
+ENV KAFKA_GROUP_ID=${KAFKA_GROUP_ID:-mygroup}
+ENV KAFKA_TOPIC_NAME=${KAFKA_TOPIC_NAME:-mytopic}
 
-# Télécharger et extraire Kafka
-RUN wget https://dlcdn.apache.org/kafka/3.9.0/kafka_2.13-3.9.0.tgz -O /tmp/kafka.tgz && \
-    tar -xzf /tmp/kafka.tgz -C /opt && \
-    mv /opt/kafka_2.13-3.9.0 /opt/kafka && \
-    rm /tmp/kafka.tgz
+# Install Kafka
+RUN apk add --no-cache bash \
+    && wget https://downloads.apache.org/kafka/3.7.1/kafka_2.12-3.7.1.tgz \
+    && tar -xzf kafka_2.12-3.7.1.tgz \
+    && mv kafka_2.12-3.7.1 /opt/kafka \
+    && rm kafka_2.12-3.7.1.tgz
 
-# Configurer Zookeeper
-COPY zookeeper.properties /opt/kafka/config/zookeeper.properties
+# Set the working directory
+WORKDIR /opt/kafka
 
-# Configurer Kafka
-COPY server.properties /opt/kafka/config/server.properties
+# Expose the Kafka port
+EXPOSE ${KAFKA_PORT}
 
-# Exposer les ports nécessaires
-EXPOSE 2181 9092 
-
-# Démarrer Zookeeper et Kafka
-CMD ["sh", "-c", "/opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties & /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties"]
+# Start Zookeeper and Kafka
+CMD ["sh", "-c", \
+    "bin/zookeeper-server-start.sh config/zookeeper.properties & \
+    bin/kafka-server-start.sh config/server.properties"]
