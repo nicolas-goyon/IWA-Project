@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: CI/CD Kafka
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Build Image
-      run: docker build -t kafka:latest ./broker-kafka/Dockerfile
+      run: cd kafka && docker build -t kafka:latest .
 
     - name: Tag Image
       run: docker tag kafka:latest ghrc.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
