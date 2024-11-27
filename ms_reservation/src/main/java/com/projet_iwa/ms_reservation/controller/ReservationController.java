@@ -60,9 +60,9 @@ public class ReservationController {
 
     // Update an existing reservation (for host acceptation)
     @PutMapping("/{id}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> updateReservation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id, @RequestBody Reservation reservation) {
         try {
-            reservationService.updateReservation(id, reservation);
+            reservationService.updateReservation(authorizationHeader,id, reservation);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

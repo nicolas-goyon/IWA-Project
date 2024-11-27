@@ -185,7 +185,7 @@ public class ReservationService {
         notif.setIduser(fullRev.getLocation().getUser().getIduser());
         notif.setBody("Vous avez une nouvelle demande pour le bien suivant: "+ fullRev.getLocation().getTitle());
         notif.setTitle("Demande de réservation");
-        notif.setRedirection("reservation");
+        notif.setRedirection("request");
         Util.createNotification(authorization, notif);
 
 
@@ -194,12 +194,28 @@ public class ReservationService {
     }
 
     // Update an existing reservation
-    public Optional<Reservation> updateReservation(Long id, Reservation reservationDetails) {
-        return reservationRepository.findById(id).map(existingReservation -> {
+    public Optional<Reservation> updateReservation(String authorization,Long id, Reservation reservationDetails) {
+        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
+        if (optionalReservation.isPresent()) {
+            Reservation existingReservation = optionalReservation.get();
             existingReservation.setStatus(reservationDetails.getStatus());
-            return reservationRepository.save(existingReservation);
-        });
+            reservationRepository.save(existingReservation);
+            // Créer une instance de Notification
+            Notification notif = new Notification();
+            notif.setIduser(optionalReservation.get().getId());
+            notif.setBody("Votre réservation n°"+ optionalReservation.get().getId()+" possède un nouveau status ");
+            notif.setTitle("Réservation Status");
+            notif.setRedirection("reservation");
+            Util.createNotification(authorization, notif);
+
+
+        } else {
+            System.out.println("Aucune réservation trouvée pour l'ID : " + id);
+        }
+
+        return optionalReservation;
     }
+
 
     // Delete a reservation
     public void deleteReservation(Long id) {

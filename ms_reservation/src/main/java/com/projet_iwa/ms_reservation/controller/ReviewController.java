@@ -18,9 +18,9 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
     @PostMapping
-    public ResponseEntity<Review> createReview(@RequestBody Review review) {
+    public ResponseEntity<Review> createReview(@RequestHeader("Authorization") String authorizationHeader,@RequestBody Review review) {
         try {
-            Review createdReview = reviewService.createReview(review);
+            Review createdReview = reviewService.createReview(authorizationHeader, review);
             return ResponseEntity.ok(createdReview);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
