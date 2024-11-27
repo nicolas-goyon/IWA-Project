@@ -1,0 +1,31 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Image
+      run: docker build -t kafka:latest .
+
+    - name: Tag Image
+      run: docker tag kafka:latest ghrc.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
+
+    - name: Push Image
+      run: |
+        echo ${{ secrets.PACKAGE_TOKEN }} | docker login ghcr.io -u ${{ secrets.PACKAGE_OWNER }} --password-stdin
+        docker push ghcr.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
