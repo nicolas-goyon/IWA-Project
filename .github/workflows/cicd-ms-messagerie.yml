@@ -1,4 +1,4 @@
-name: MS_RESERVATION CI/CD Pipeline
+name: MS_MESSAGERIE CI/CD Pipeline
 
 on:
   push:
@@ -86,15 +86,18 @@ jobs:
           docker-compose -f docker-compose.yml build app
           docker-compose -f docker-compose.yml build db 
   
-      - name: Tag Docker images
-        run: |
-          docker images
-          docker tag ${{ env.MICROSERVICE_NAME }}_app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-          docker tag ${{ env.MICROSERVICE_NAME }}_db ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+      - name: List Docker images
+        run: docker images
+
+      - name: Tag App Docker image
+        run: docker tag ${{ env.MICROSERVICE_NAME }}_app ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-app:latest
+          
+      - name: Tag db Docker image
+        run: docker tag ${{ env.MICROSERVICE_NAME }}_db ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-db:latest
   
       - name: Push Docker images to GitHub Container Registry
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo ${{ secrets.PACKAGE_TOKEN }} | docker login ghcr.io -u ${{ secrets.PACKAGE_OWNER }} --password-stdin
   
-          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
-          docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-db:latest
+          docker push ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-app:latest
+          docker push ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-db:latest

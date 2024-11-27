@@ -15,6 +15,7 @@ services:
         - RESERVATION_SERVICE_URI=${RESERVATION_SERVICE_URI}
         - REVIEW_SERVICE_URI=${REVIEW_SERVICE_URI}
         - NOTIFICATION_SERVICE_URI=${NOTIFICATION_SERVICE_URI}
+        - MESSAGERIE_SERVICE_URI=${MESSAGERIE_SERVICE_URI}
     container_name: ${MS_NAME}-tests
     volumes:
       - ./reports:/app/reports
@@ -23,6 +24,7 @@ services:
       - ms_reservation
       - ms_location
       - ms_notification
+      - ms_messagerie
     networks:
       - iwa_network
 
@@ -98,6 +100,23 @@ services:
       - iwa_network_notification
 
 
+
+
+  ms_messagerie:
+    container_name: ms-messagerie
+    image: ghcr.io/nicolas-goyon/ms_messagerie-app:latest
+    networks:
+      - iwa_network
+      - iwa_network_messagerie
+    depends_on:
+      - ms_messagerie-db
+
+  ms_messagerie-db:
+    container_name: ms-messagerie-db
+    image: ghcr.io/nicolas-goyon/ms_messagerie-db:latest
+    networks:
+      - iwa_network_messagerie
+
 # Networks
 networks:
   iwa_network:
@@ -105,6 +124,7 @@ networks:
   iwa_network_reservation:
   iwa_network_location:
   iwa_network_notification:
+  iwa_network_messagerie:
 
 # Volumes
 volumes:

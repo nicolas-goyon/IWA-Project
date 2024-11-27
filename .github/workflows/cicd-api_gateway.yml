@@ -122,11 +122,12 @@ jobs:
 
     - name: Tag Docker images
       run: |
-        docker tag app ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+        docker tag app ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-app:latest
 
     - name: Push Docker images to GitHub Container Registry
       run: |
-        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo ${{ secrets.PACKAGE_TOKEN }} | docker login ghcr.io -u ${{ secrets.PACKAGE_OWNER }} --password-stdin
 
         # Push the application image
-        docker push ghcr.io/${{ github.repository_owner }}/${{ env.MICROSERVICE_NAME }}-app:latest
+        docker push ghcr.io/${{ secrets.PACKAGE_OWNER }}/${{ env.MICROSERVICE_NAME }}-app:latest
+
