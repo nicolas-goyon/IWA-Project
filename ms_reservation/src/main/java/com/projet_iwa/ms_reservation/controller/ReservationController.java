@@ -29,10 +29,15 @@ public class ReservationController {
     public List<Reservation> getAllReservation() {
         return reservationService.getAllReservation();
     }
+    @GetMapping("/all/host/{id}")
+    public List<Reservation> getReservationByHostId(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id) {
+        return reservationService.getReservationByHostId(authorizationHeader,id);
+    }
     @GetMapping("/all/{id}")
     public List<Reservation> getReservationByTravelerId(@PathVariable Long id) {
         return reservationService.getReservationByTravelerId(id);
     }
+
     @GetMapping("/all/location/{id}")
     public List<Reservation> getReservationByLocationId(@PathVariable Long id) {
         return reservationService.getReservationByLocationId(id);
@@ -45,18 +50,19 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<String> createReservation(
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody Reservation reservation,
             @RequestHeader("X-User-Id") Long userId) {
-        reservationService.createReservation(reservation, userId);
+        reservationService.createReservation(authorizationHeader,reservation, userId);
         // Sauvegarde ou logique métier ici
         return ResponseEntity.ok("Réservation créée pour l'utilisateur : " + userId);
     }
 
     // Update an existing reservation (for host acceptation)
     @PutMapping("/{id}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
+    public ResponseEntity<Reservation> updateReservation(@RequestHeader("Authorization") String authorizationHeader,@PathVariable Long id, @RequestBody Reservation reservation) {
         try {
-            reservationService.updateReservation(id, reservation);
+            reservationService.updateReservation(authorizationHeader,id, reservation);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

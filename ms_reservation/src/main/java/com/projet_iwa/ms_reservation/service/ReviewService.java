@@ -1,6 +1,7 @@
 package com.projet_iwa.ms_reservation.service;
 
 
+import com.projet_iwa.ms_reservation.dto.Notification;
 import com.projet_iwa.ms_reservation.model.Grade;
 import com.projet_iwa.ms_reservation.model.Review;
 import com.projet_iwa.ms_reservation.repository.ReviewRepository;
@@ -25,11 +26,20 @@ public class ReviewService {
      * @param review la critique à créer
      * @return la critique créée
      */
-    public Review createReview(Review review) {
+    public Review createReview(String authorization, Review review) {
         if (review.getGrade() < 1 || review.getGrade() > 5) {
             throw new IllegalArgumentException("La note doit être comprise entre 1 et 5.");
         }
-        return reviewRepository.save(review);
+        Review reviewSaved = reviewRepository.save(review);
+        // Créer une instance de Notification
+        Notification notif = new Notification();
+        notif.setIduser(reviewSaved.getIdReviewed());
+        notif.setBody("Vous avez reçu un nouveau commentaire");
+        notif.setTitle("Nouveau commentaire");
+        notif.setRedirection("review");
+        Util.createNotification(authorization, notif);
+
+        return reviewSaved;
     }
 
     /**

@@ -77,4 +77,8 @@ public class Reservation {
         this.status = status;
     }
 
+    // Méthode calculée pour vérifier si la réservation est expirée
+    public boolean isExpired() {
+        return LocalDate.now().isAfter(this.dateEnd);
+    }
 }
