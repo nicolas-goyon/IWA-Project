@@ -1,12 +1,15 @@
 name: CI/CD Kafka
-
 on:
   push:
     branches:
       - '**'
+    paths:
+      - 'broker-kafka/**'
   pull_request:
     branches:
       - '**'
+    paths:
+      - 'broker-kafka/**'
 
 jobs:
   build:

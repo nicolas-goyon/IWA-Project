@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'api_gateway/**'
   pull_request:
     branches:
       - '**'
+    paths:
+        - 'api_gateway/**'
 
 env:
   JAVA_VERSION: '21'

@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'ms_messagerie/**'
   pull_request:
     branches:
       - '**'
+    paths:
+      - 'ms_messagerie/**'
 
 env:
   JAVA_VERSION: '21'

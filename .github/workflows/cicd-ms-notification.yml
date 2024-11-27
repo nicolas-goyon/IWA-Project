@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'ms_notification/**'
   pull_request:
     branches:
       - '**'
+    paths:
+        - 'ms_notification/**'
 
 env:
   JAVA_VERSION: '21'

@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - '**'
+    paths:
+      - 'ms_user/**'
   pull_request:
     branches:
       - '**'
+    paths:
+        - 'ms_user/**'
 
 env:
   JAVA_VERSION: '21'
