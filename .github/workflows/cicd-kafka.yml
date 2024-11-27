@@ -1,4 +1,5 @@
 name: CI/CD Kafka
+
 on:
   push:
     branches:
@@ -24,11 +25,15 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Build Image
-      run: cd broker-kafka && docker build -t kafka:latest .
+    - name: Build Image with Docker Compose
+      run: |
+        cd broker-kafka
+        docker-compose build
 
     - name: Tag Image
-      run: docker tag kafka:latest ghcr.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
+      run: |
+        cd broker-kafka
+        docker tag kafka-zookeeper:latest ghcr.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
 
     - name: Push Image
       run: |
