@@ -25,7 +25,7 @@ COPY zookeeper.properties /opt/kafka/config/zookeeper.properties
 COPY server.properties /opt/kafka/config/server.properties
 
 # Exposer les ports nécessaires
-EXPOSE 2181 9092
+EXPOSE 2181 9092 
 
 # Démarrer Zookeeper et Kafka
 CMD ["sh", "-c", "/opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties & /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties"]
