@@ -57,13 +57,10 @@ jobs:
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml up -d --build db
 
-      - name: Wait for database to be ready
+      - name: Run the kafka container
         run: |
           cd ${{ env.PROJECT_PATH }}
-          until docker-compose -f docker-compose.yml exec db pg_isready -U postgres; do
-            echo "Waiting for database to be ready..."
-            sleep 5
-          done
+          docker-compose -f docker-compose.yml up -d --build kafka
 
       - name: Run tests
         run: |
