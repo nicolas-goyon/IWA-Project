@@ -50,9 +50,10 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<String> createReservation(
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody Reservation reservation,
             @RequestHeader("X-User-Id") Long userId) {
-        reservationService.createReservation(reservation, userId);
+        reservationService.createReservation(authorizationHeader,reservation, userId);
         // Sauvegarde ou logique métier ici
         return ResponseEntity.ok("Réservation créée pour l'utilisateur : " + userId);
     }

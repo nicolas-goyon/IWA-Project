@@ -3,6 +3,7 @@ package com.projet_iwa.ms_reservation.service;
 
 import com.projet_iwa.ms_reservation.Util;
 import com.projet_iwa.ms_reservation.dto.LocationDTO;
+import com.projet_iwa.ms_reservation.dto.Notification;
 import com.projet_iwa.ms_reservation.dto.ReservationDTO;
 import com.projet_iwa.ms_reservation.exceptions.InvalidReservationException;
 import com.projet_iwa.ms_reservation.exceptions.ReservationConflictException;
@@ -153,7 +154,7 @@ public class ReservationService {
 
 
 
-    public Reservation createReservation(Reservation reservation, Long userId) {
+    public Reservation createReservation(String authorization,Reservation reservation, Long userId) {
         // Validation des dates
         if (reservation.getDateStart() == null || reservation.getDateEnd() == null) {
             throw new InvalidReservationException("Les dates de début et de fin sont obligatoires.");
@@ -176,7 +177,20 @@ public class ReservationService {
         reservation.setIdTraveler(userId);
 
         // Sauvegarde
-        return reservationRepository.save(reservation);
+        Reservation reservationSaved = reservationRepository.save(reservation);
+        ReservationDTO fullRev = getFullReservation(authorization, reservationSaved.getId());
+        System.out.println(fullRev.getLocation().getUser().getIduser());
+
+        Notification notif = new Notification();
+        notif.setIduser(fullRev.getLocation().getUser().getIduser());
+        notif.setBody("Vous avez une nouvelle demande pour le bien suivant: "+ fullRev.getLocation().getTitle());
+        notif.setTitle("Demande de réservation");
+        notif.setRedirection("reservation");
+        Util.createNotification(authorization, notif);
+
+
+
+        return reservationSaved;
     }
 
     // Update an existing reservation

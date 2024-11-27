@@ -1,5 +1,6 @@
 package com.projet_iwa.ms_reservation;
 
+import com.projet_iwa.ms_reservation.dto.Notification;
 import com.projet_iwa.ms_reservation.model.Grade;
 import com.projet_iwa.ms_reservation.model.Reservation;
 import com.projet_iwa.ms_reservation.model.Review;
@@ -88,5 +89,17 @@ public class Util {
 
         // Utilisation de la méthode avec un ParameterizedTypeReference<T> pour les types paramétrés
         return restTemplate.exchange(url, method, entity, responseType);
+    }
+    public static void createNotification(String authorizationHeader, Notification notification){
+        String jwtToken = Util.extractJwtFromHeader(authorizationHeader);
+        String notifIUrl = "http://localhost:8080" + "/notifications";
+        System.out.println(notifIUrl);
+        ResponseEntity<Notification> response = Util.sendRequestWithJwt(notifIUrl, HttpMethod.POST, jwtToken,Notification.class, notification);
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new IllegalArgumentException("Échec de la création de la notification. Réponse : "
+                    + response.getStatusCode());
+        }
+        response.getBody();
     }
 }
