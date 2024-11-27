@@ -52,7 +52,7 @@ jobs:
       - name: Create a network
         run: docker network create iwa_network
 
-        - name: Run docker-compose of db
+      - name: Run docker-compose of db
         run: |
           cd ${{ env.PROJECT_PATH }}
           docker-compose -f docker-compose.yml up -d --build db
