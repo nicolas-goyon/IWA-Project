@@ -20,7 +20,7 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Build Image
-      run: docker build -t kafka:latest .
+      run: docker build -t kafka:latest ./broker-kafka/Dockerfile
 
     - name: Tag Image
       run: docker tag kafka:latest ghrc.io/${{ secrets.PACKAGE_OWNER }}/kafka:latest
