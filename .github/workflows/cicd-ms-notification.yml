@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'ms_notification/**'
+      - '.github/workflows/cicd-ms-notification.yml'
   pull_request:
     branches:
       - '**'
     paths:
         - 'ms_notification/**'
+        - '.github/workflows/cicd-ms-notification.yml'
 
 env:
   JAVA_VERSION: '21'

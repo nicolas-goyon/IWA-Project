@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'ms_messagerie/**'
+      - '.github/workflows/cicd-ms-messagerie.yml'
   pull_request:
     branches:
       - '**'
     paths:
       - 'ms_messagerie/**'
+      - '.github/workflows/cicd-ms-messagerie.yml'
 
 env:
   JAVA_VERSION: '21'

@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'ms_user/**'
+      - '.github/workflows/cicd-ms-user.yml'
   pull_request:
     branches:
       - '**'
     paths:
-        - 'ms_user/**'
+      - 'ms_user/**'
+      - '.github/workflows/cicd-ms-user.yml'
 
 env:
   JAVA_VERSION: '21'

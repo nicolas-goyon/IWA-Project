@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'api_gateway/**'
+      - '.github/workflows/cicd-api_gateway.yml'
   pull_request:
     branches:
       - '**'
     paths:
         - 'api_gateway/**'
+        - '.github/workflows/cicd-api_gateway.yml'
 
 env:
   JAVA_VERSION: '21'

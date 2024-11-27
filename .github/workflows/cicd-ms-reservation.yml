@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'ms_reservation/**'
+      - '.github/workflows/cicd-ms-reservation.yml'
   pull_request:
     branches:
       - '**'
     paths:
       - 'ms_reservation/**'
+      - '.github/workflows/cicd-ms-reservation.yml'
 
 env:
   JAVA_VERSION: '21'

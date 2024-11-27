@@ -6,11 +6,13 @@ on:
       - '**'
     paths:
       - 'ms_location/**'
+      - '.github/workflows/cicd-ms-location.yml'
   pull_request:
     branches:
       - '**'
     paths:
       - 'ms_location/**'
+      - '.github/workflows/cicd-ms-location.yml'
 
 env:
   JAVA_VERSION: '21'

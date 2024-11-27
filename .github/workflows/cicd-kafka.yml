@@ -5,11 +5,13 @@ on:
       - '**'
     paths:
       - 'broker-kafka/**'
+      - '.github/workflows/cicd-kafka.yml'
   pull_request:
     branches:
       - '**'
     paths:
       - 'broker-kafka/**'
+      - '.github/workflows/cicd-kafka.yml'
 
 jobs:
   build:
