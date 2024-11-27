@@ -5,6 +5,26 @@ public class MessageNotification {
     private String receiverId;
     private String message;
 
+    public String getNameSender() {
+        return nameSender;
+    }
+
+    public void setNameSender(String nameSender) {
+        this.nameSender = nameSender;
+    }
+
+    private String nameSender;
+
+    public String getLastnameSender() {
+        return lastnameSender;
+    }
+
+    public void setLastnameSender(String lastnameSender) {
+        this.lastnameSender = lastnameSender;
+    }
+
+    private String lastnameSender;
+
     // Getters et Setters
     public String getSenderId() {
         return senderId;

@@ -4,6 +4,7 @@ import com.projet_iwa.ms_messagerie.model.Conversation;
 import com.projet_iwa.ms_messagerie.model.Message;
 import com.projet_iwa.ms_messagerie.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/conversations")
 public class ConversationController {
+
+
+    @Value("${api.gateway.url}")
+    private String apiGatewayUrl;
+
+    // Use the field directly
+    public String getApiGatewayUrl() {
+        return apiGatewayUrl;
+    }
 
     private final ConversationService conversationService;
 
@@ -24,10 +34,10 @@ public class ConversationController {
         return conversationService.createConversation(conversation);
     }
     @PostMapping("/messages")
-    public Message createMessage(@RequestBody Message message) {
+    public Message createMessage(@RequestHeader("Authorization") String authorization, @RequestBody Message message) {
         // l'id de la conv et du user est dans le body
         message.setDate(LocalDateTime.now());
-        return conversationService.createMessage(message);
+        return conversationService.createMessage(authorization,message);
     }
 
     @GetMapping("all-by-user/{id}")

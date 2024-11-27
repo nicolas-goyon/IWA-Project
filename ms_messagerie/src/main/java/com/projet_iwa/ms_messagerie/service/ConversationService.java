@@ -32,7 +32,7 @@ public class ConversationService {
     public Conversation createConversation(Conversation conversation) {
         return conversationRepository.save(conversation) ;
     }
-    public Message createMessage(Message message) {
+    public Message createMessage(String authorization, Message message) {
         Message messageSaved = null;
         try {
             Optional<Conversation> conversation = conversationRepository.findById(message.getIdconversation());
@@ -43,10 +43,10 @@ public class ConversationService {
             // Dis qui est receiver et sender
             messageSaved = messageRepository.save(message);
             if (messageSaved.getIduser().equals(conversation.get().getIduser1())) {
-                kafkaProducerService.sendMessageToNotification(messageSaved.getIduser(), conversation.get().getIduser2());
+                kafkaProducerService.sendMessageToNotification(authorization, messageSaved.getIduser(), conversation.get().getIduser2());
             }
             else{
-                kafkaProducerService.sendMessageToNotification(messageSaved.getIduser(), conversation.get().getIduser1());
+                kafkaProducerService.sendMessageToNotification(authorization,messageSaved.getIduser(), conversation.get().getIduser1());
             }
 
         } catch (Exception e) {

@@ -32,7 +32,7 @@ public class KafkaListenerService {
             // Créer une instance de Notification
             Notification notif = new Notification();
             notif.setIduser(Long.parseLong(notification_object.getReceiverId())); //TRANSFORMER EN INT
-            notif.setBody("Vous avez un nouveau message de : "+ notification_object.getSenderId());
+            notif.setBody("Vous avez un nouveau message de "+ notification_object.getNameSender() +" "+ notification_object.getLastnameSender());
             notif.setTitle("Nouveau Message");
             notif.setRedirection("messagerie");
 
