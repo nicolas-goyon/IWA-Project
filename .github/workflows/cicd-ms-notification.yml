@@ -52,11 +52,18 @@ jobs:
       - name: Create a network
         run: docker network create iwa_network
 
-      - name: run docker-compose of db and tests
+      - name: Wait for database to be ready
         run: |
           cd ${{ env.PROJECT_PATH }}
-            docker-compose -f docker-compose.yml up -d --build db
-            docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
+          until docker-compose -f docker-compose.yml exec db pg_isready -U postgres; do
+            echo "Waiting for database to be ready..."
+            sleep 5
+          done
+
+      - name: Run tests
+        run: |
+          cd ${{ env.PROJECT_PATH }}
+          docker-compose -f docker-compose.yml up --build --exit-code-from tests tests
 
       - name: Wait for tests to finish
         run: |
